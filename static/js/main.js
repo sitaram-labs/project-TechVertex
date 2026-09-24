@@ -41,11 +41,11 @@ function getUserProfile() {
     } catch (e) {}
     return {
         role: 'donor',
-        name: 'TechVertex Main Cafeteria',
-        email: 'donor@techvertex.com',
-        address: '500 Howard St, Suite 300',
-        lat: 37.7892,
-        lng: -122.3985
+        name: 'LMB (Laxmi Misthan Bhandar)',
+        email: 'donor@lmbjaipur.in',
+        address: 'Johari Bazar, Jaipur, Rajasthan, India',
+        lat: 26.9180,
+        lng: 75.8250
     };
 }
 
@@ -124,8 +124,8 @@ window.initMap = function initMap() {
 
     try {
         map = new google.maps.Map(mapElement, {
-            center: { lat: 37.7850, lng: -122.4030 },
-            zoom: 14,
+            center: { lat: 26.9124, lng: 75.7873 },
+            zoom: 13,
             styles: darkMapStyle,
             disableDefaultUI: false,
             zoomControl: true,
@@ -566,9 +566,9 @@ function completeWizard(event) {
     const profile = {
         role: selectedRole,
         name: document.getElementById('wiz-name').value || 'Surplus Partner',
-        address: document.getElementById('wiz-address').value || 'San Francisco Center',
-        lat: parseFloat(document.getElementById('wiz-lat').value || 37.7850),
-        lng: parseFloat(document.getElementById('wiz-lng').value || -122.4030)
+        address: document.getElementById('wiz-address').value || 'Jaipur, Rajasthan, India',
+        lat: parseFloat(document.getElementById('wiz-lat').value || 26.9124),
+        lng: parseFloat(document.getElementById('wiz-lng').value || 75.7873)
     };
 
     saveUserProfile(profile);

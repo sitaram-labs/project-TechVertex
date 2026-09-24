@@ -186,20 +186,20 @@
                 <form onsubmit="completeWizard(event)" style="display:flex; flex-direction:column; gap:1rem;">
                     <div>
                         <label style="font-size:0.83rem; color:var(--text-muted);">Organization / Business Name:</label>
-                        <input type="text" id="wiz-name" placeholder="e.g. TechVertex Cafe & Dining" required style="width:100%; padding:0.65rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px; margin-top:0.25rem;">
+                        <input type="text" id="wiz-name" placeholder="e.g. LMB (Laxmi Misthan Bhandar)" required style="width:100%; padding:0.65rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px; margin-top:0.25rem;">
                     </div>
                     <div>
-                        <label style="font-size:0.83rem; color:var(--text-muted);">Street Address / City Area:</label>
-                        <input type="text" id="wiz-address" placeholder="e.g. 500 Howard St, Financial District" required style="width:100%; padding:0.65rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px; margin-top:0.25rem;">
+                        <label style="font-size:0.83rem; color:var(--text-muted);">Street Address / City Area (Rajasthan):</label>
+                        <input type="text" id="wiz-address" placeholder="e.g. Johari Bazar, Jaipur, Rajasthan, India" required style="width:100%; padding:0.65rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px; margin-top:0.25rem;">
                     </div>
                     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.75rem;">
                         <div>
-                            <label style="font-size:0.83rem; color:var(--text-muted);">Latitude Coordinate:</label>
-                            <input type="number" step="0.0001" id="wiz-lat" value="37.7892" required style="width:100%; padding:0.65rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px; margin-top:0.25rem;">
+                            <label style="font-size:0.83rem; color:var(--text-muted);">Latitude (Rajasthan):</label>
+                            <input type="number" step="0.0001" id="wiz-lat" value="26.9180" required style="width:100%; padding:0.65rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px; margin-top:0.25rem;">
                         </div>
                         <div>
-                            <label style="font-size:0.83rem; color:var(--text-muted);">Longitude Coordinate:</label>
-                            <input type="number" step="0.0001" id="wiz-lng" value="-122.3985" required style="width:100%; padding:0.65rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px; margin-top:0.25rem;">
+                            <label style="font-size:0.83rem; color:var(--text-muted);">Longitude (Rajasthan):</label>
+                            <input type="number" step="0.0001" id="wiz-lng" value="75.8250" required style="width:100%; padding:0.65rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px; margin-top:0.25rem;">
                         </div>
                     </div>
                     <div style="display:flex; gap:0.75rem; margin-top:0.5rem;">
@@ -222,16 +222,16 @@
             <form onsubmit="handleNgoPostSubmit(event)" style="display:flex; flex-direction:column; gap:0.85rem; padding:0.5rem 0;">
                 <div>
                     <label style="font-size:0.83rem; color:var(--text-muted);">NGO / Shelter Organization Name:</label>
-                    <input type="text" id="ngo-req-name" placeholder="e.g. Hope Haven Community Kitchen" required style="width:100%; padding:0.6rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px;">
+                    <input type="text" id="ngo-req-name" placeholder="e.g. Apna Ghar Ashram Jaipur" required style="width:100%; padding:0.6rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px;">
                 </div>
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.75rem;">
                     <div>
                         <label style="font-size:0.83rem; color:var(--text-muted);">Contact Person:</label>
-                        <input type="text" id="ngo-req-person" placeholder="e.g. Sarah Jenkins" required style="width:100%; padding:0.6rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px;">
+                        <input type="text" id="ngo-req-person" placeholder="e.g. Rameshwar Prasad" required style="width:100%; padding:0.6rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px;">
                     </div>
                     <div>
                         <label style="font-size:0.83rem; color:var(--text-muted);">Phone Number:</label>
-                        <input type="text" id="ngo-req-phone" placeholder="e.g. +1 (555) 234-5678" required style="width:100%; padding:0.6rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px;">
+                        <input type="text" id="ngo-req-phone" placeholder="e.g. +91 94140 12345" required style="width:100%; padding:0.6rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px;">
                     </div>
                 </div>
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.75rem;">
@@ -247,12 +247,12 @@
                     </div>
                     <div>
                         <label style="font-size:0.83rem; color:var(--text-muted);">Servings Needed:</label>
-                        <input type="number" id="ngo-req-servings" value="60" min="5" required style="width:100%; padding:0.6rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px;">
+                        <input type="number" id="ngo-req-servings" value="80" min="5" required style="width:100%; padding:0.6rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px;">
                     </div>
                 </div>
                 <div>
-                    <label style="font-size:0.83rem; color:var(--text-muted);">Delivery Street Address:</label>
-                    <input type="text" id="ngo-req-address" placeholder="e.g. 452 Mission Street, Downtown" required style="width:100%; padding:0.6rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px;">
+                    <label style="font-size:0.83rem; color:var(--text-muted);">Delivery Street Address (Rajasthan):</label>
+                    <input type="text" id="ngo-req-address" placeholder="e.g. Mansarovar, Jaipur, Rajasthan, India" required style="width:100%; padding:0.6rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px;">
                 </div>
                 <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:0.5rem;">
                     <div>
@@ -261,11 +261,11 @@
                     </div>
                     <div>
                         <label style="font-size:0.78rem; color:var(--text-muted);">Latitude:</label>
-                        <input type="number" step="0.0001" id="ngo-req-lat" value="37.7885" required style="width:100%; padding:0.5rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px;">
+                        <input type="number" step="0.0001" id="ngo-req-lat" value="26.8500" required style="width:100%; padding:0.5rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px;">
                     </div>
                     <div>
                         <label style="font-size:0.78rem; color:var(--text-muted);">Longitude:</label>
-                        <input type="number" step="0.0001" id="ngo-req-lng" value="-122.4012" required style="width:100%; padding:0.5rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px;">
+                        <input type="number" step="0.0001" id="ngo-req-lng" value="75.7700" required style="width:100%; padding:0.5rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px;">
                     </div>
                 </div>
                 <div>

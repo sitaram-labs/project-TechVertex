@@ -32,71 +32,71 @@ def inject_google_maps_api_key():
 SHELTERS = [
     {
         "id": "shelter_1",
-        "name": "Hope Haven Community Kitchen",
-        "address": "452 Mission Street, Downtown",
-        "lat": 37.7885,
-        "lng": -122.4012,
-        "capacity_servings": 120,
-        "current_occupancy": 35,
+        "name": "Apna Ghar Ashram Jaipur",
+        "address": "Mansarovar, Jaipur, Rajasthan, India",
+        "lat": 26.8500,
+        "lng": 75.7700,
+        "capacity_servings": 150,
+        "current_occupancy": 45,
         "fridge_available": True,
         "accepts_categories": ["Prepared Meals", "Bakery", "Produce", "Dairy", "Packaged"],
-        "contact_phone": "+1 (555) 234-5678",
-        "contact_person": "Sarah Jenkins"
+        "contact_phone": "+91 94140 12345",
+        "contact_person": "Rameshwar Prasad"
     },
     {
         "id": "shelter_2",
-        "name": "St. Vincent Rescue & Shelter",
-        "address": "890 Howard St, South of Market",
-        "lat": 37.7812,
-        "lng": -122.4056,
-        "capacity_servings": 200,
-        "current_occupancy": 110,
+        "name": "Akshaya Patra Foundation Jaipur",
+        "address": "Jagatpura, Jaipur, Rajasthan, India",
+        "lat": 26.8150,
+        "lng": 75.8350,
+        "capacity_servings": 300,
+        "current_occupancy": 120,
         "fridge_available": True,
         "accepts_categories": ["Prepared Meals", "Produce", "Packaged"],
-        "contact_phone": "+1 (555) 876-5432",
-        "contact_person": "Marcus Vance"
+        "contact_phone": "+91 98290 54321",
+        "contact_person": "Govind Das"
     },
     {
         "id": "shelter_3",
-        "name": "Grace Youth Horizon Center",
-        "address": "1201 Pine St, Nob Hill",
-        "lat": 37.7901,
-        "lng": -122.4140,
-        "capacity_servings": 75,
-        "current_occupancy": 20,
+        "name": "Rajasthan Mahila Kalyan Mandal",
+        "address": "Ajmer Road, Jaipur, Rajasthan, India",
+        "lat": 26.8900,
+        "lng": 75.7500,
+        "capacity_servings": 100,
+        "current_occupancy": 30,
         "fridge_available": False,
         "accepts_categories": ["Bakery", "Produce", "Packaged"],
-        "contact_phone": "+1 (555) 345-6789",
-        "contact_person": "Elena Rostova"
+        "contact_phone": "+91 94133 67890",
+        "contact_person": "Sunita Sharma"
     }
 ]
 
 DRIVERS = [
     {
         "id": "driver_1",
-        "name": "David Chen",
-        "vehicle_type": "Electric Cargo Van",
-        "phone": "+1 (555) 444-1122",
-        "lat": 37.7850,
-        "lng": -122.4030,
+        "name": "Ramesh Sharma",
+        "vehicle_type": "Tata Ace EV Cargo Van",
+        "phone": "+91 98280 11223",
+        "lat": 26.9100,
+        "lng": 75.7900,
         "status": "Available"
     },
     {
         "id": "driver_2",
-        "name": "Maria Santos",
-        "vehicle_type": "Hatchback (Refrigerated Box)",
-        "phone": "+1 (555) 444-3344",
-        "lat": 37.7890,
-        "lng": -122.4100,
+        "name": "Priya Verma",
+        "vehicle_type": "Mahindra Supro Refrigerated Van",
+        "phone": "+91 94141 33445",
+        "lat": 26.8800,
+        "lng": 75.8100,
         "status": "Available"
     },
     {
         "id": "driver_3",
-        "name": "Alex Johnson",
-        "vehicle_type": "Bicycle Cargo Trailer",
-        "phone": "+1 (555) 444-5566",
-        "lat": 37.7820,
-        "lng": -122.3980,
+        "name": "Vikram Singh",
+        "vehicle_type": "Electric Cargo Auto",
+        "phone": "+91 98299 55667",
+        "lat": 26.9200,
+        "lng": 75.8200,
         "status": "Available"
     }
 ]
@@ -104,20 +104,20 @@ DRIVERS = [
 DONATIONS = [
     {
         "id": "don_101",
-        "donor_name": "TechVertex Main Cafeteria",
-        "food_title": "Tray-Sealed Lasagna & Salad Trays",
+        "donor_name": "LMB (Laxmi Misthan Bhandar)",
+        "food_title": "Fresh Paneer Sabzi, Dal Baati & Chapati Trays",
         "category": "Prepared Meals",
-        "weight_kg": 18.5,
-        "servings": 45,
+        "weight_kg": 25.0,
+        "servings": 60,
         "storage_type": "Heated Container",
         "location": {
-            "address": "500 Howard St, Suite 300",
-            "lat": 37.7892,
-            "lng": -122.3985
+            "address": "Johari Bazar, Jaipur, Rajasthan, India",
+            "lat": 26.9180,
+            "lng": 75.8250
         },
         "created_at": (datetime.now() - timedelta(minutes=25)).isoformat(),
-        "expiry_hours": 2.5,
-        "notes": "Freshly prepared for corporate lunch event, pristine condition.",
+        "expiry_hours": 3.0,
+        "notes": "Freshly prepared for evening lunch event, pristine condition in hot insulated boxes.",
         "status": "Posted",
         "matched_shelter_id": None,
         "matched_shelter_name": None,
@@ -127,48 +127,48 @@ DONATIONS = [
     },
     {
         "id": "don_102",
-        "donor_name": "Artisan Bakery & Co.",
-        "food_title": "Surplus Sourdough & Croissants",
+        "donor_name": "Rawat Misthan Bhandar",
+        "food_title": "Surplus Pyaaz Kachori & Fresh Breads",
         "category": "Bakery",
-        "weight_kg": 12.0,
-        "servings": 30,
+        "weight_kg": 15.0,
+        "servings": 40,
         "storage_type": "Ambient",
         "location": {
-            "address": "780 Market St",
-            "lat": 37.7865,
-            "lng": -122.4045
+            "address": "Station Road, Jaipur, Rajasthan, India",
+            "lat": 26.9230,
+            "lng": 75.7970
         },
         "created_at": (datetime.now() - timedelta(minutes=45)).isoformat(),
         "expiry_hours": 5.0,
-        "notes": "Baked this morning, packed in clean eco-bags.",
+        "notes": "Fresh morning batch, packed in clean food-grade boxes.",
         "status": "Matched",
         "matched_shelter_id": "shelter_1",
-        "matched_shelter_name": "Hope Haven Community Kitchen",
+        "matched_shelter_name": "Apna Ghar Ashram Jaipur",
         "driver_id": "driver_1",
-        "driver_name": "David Chen",
+        "driver_name": "Ramesh Sharma",
         "photo_url": "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=500&q=80"
     },
     {
         "id": "don_103",
-        "donor_name": "GreenGrocer Organic Market",
-        "food_title": "Fresh Apples, Oranges & Leafy Greens",
+        "donor_name": "Chokhi Dhani Resort & Restaurant",
+        "food_title": "Fresh Apples, Milk Cartons & Seasonal Fruits",
         "category": "Produce",
-        "weight_kg": 25.0,
-        "servings": 60,
+        "weight_kg": 30.0,
+        "servings": 75,
         "storage_type": "Refrigerated",
         "location": {
-            "address": "325 4th St",
-            "lat": 37.7830,
-            "lng": -122.4010
+            "address": "Tonk Road, Jaipur, Rajasthan, India",
+            "lat": 26.7750,
+            "lng": 75.8300
         },
         "created_at": (datetime.now() - timedelta(hours=1, minutes=10)).isoformat(),
         "expiry_hours": 8.0,
-        "notes": "Slight cosmetic flaws, 100% ripe and high nutritional value.",
+        "notes": "Fresh farm produce, refrigerated and ready for instant distribution.",
         "status": "Delivered",
         "matched_shelter_id": "shelter_2",
-        "matched_shelter_name": "St. Vincent Rescue & Shelter",
+        "matched_shelter_name": "Akshaya Patra Foundation Jaipur",
         "driver_id": "driver_2",
-        "driver_name": "Maria Santos",
+        "driver_name": "Priya Verma",
         "photo_url": "https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&w=500&q=80"
     }
 ]
@@ -176,29 +176,29 @@ DONATIONS = [
 RESCUE_HISTORY = [
     {
         "rescue_id": "res_8801",
-        "donor_name": "GreenGrocer Organic Market",
-        "shelter_name": "St. Vincent Rescue & Shelter",
-        "driver_name": "Maria Santos",
-        "weight_kg": 25.0,
-        "servings": 60,
+        "donor_name": "Chokhi Dhani Resort & Restaurant",
+        "shelter_name": "Akshaya Patra Foundation Jaipur",
+        "driver_name": "Priya Verma",
+        "weight_kg": 30.0,
+        "servings": 75,
         "delivered_at": (datetime.now() - timedelta(minutes=30)).isoformat(),
-        "co2e_saved_kg": round(25.0 * 1.9, 2)
+        "co2e_saved_kg": round(30.0 * 1.9, 2)
     }
 ]
 
 NGO_REQUESTS = [
     {
         "id": "req_501",
-        "ngo_name": "Hope Haven Community Kitchen",
-        "contact_person": "Sarah Jenkins",
-        "contact_phone": "+1 (555) 234-5678",
+        "ngo_name": "Apna Ghar Ashram Jaipur",
+        "contact_person": "Rameshwar Prasad",
+        "contact_phone": "+91 94140 12345",
         "category": "Prepared Meals",
-        "servings_needed": 60,
+        "servings_needed": 80,
         "urgency_hours": 3.0,
-        "address": "452 Mission Street, Downtown",
-        "lat": 37.7885,
-        "lng": -122.4012,
-        "notes": "Urgent request for 60 evening warm meals for homeless families.",
+        "address": "Mansarovar, Jaipur, Rajasthan, India",
+        "lat": 26.8500,
+        "lng": 75.7700,
+        "notes": "Urgent dinner request for 80 resident elderly and homeless guests.",
         "status": "Open",
         "created_at": (datetime.now() - timedelta(minutes=20)).isoformat(),
         "fulfilled_by": None,
@@ -206,16 +206,16 @@ NGO_REQUESTS = [
     },
     {
         "id": "req_502",
-        "ngo_name": "St. Vincent Rescue & Shelter",
-        "contact_person": "Marcus Vance",
-        "contact_phone": "+1 (555) 876-5432",
+        "ngo_name": "Akshaya Patra Foundation Jaipur",
+        "contact_person": "Govind Das",
+        "contact_phone": "+91 98290 54321",
         "category": "Produce",
-        "servings_needed": 100,
+        "servings_needed": 120,
         "urgency_hours": 5.0,
-        "address": "890 Howard St, South of Market",
-        "lat": 37.7812,
-        "lng": -122.4056,
-        "notes": "Fresh fruits & vegetables needed for daily shelter soup kitchen.",
+        "address": "Jagatpura, Jaipur, Rajasthan, India",
+        "lat": 26.8150,
+        "lng": 75.8350,
+        "notes": "Fresh vegetables and fruits needed for evening community relief kitchen.",
         "status": "Open",
         "created_at": (datetime.now() - timedelta(minutes=40)).isoformat(),
         "fulfilled_by": None,
@@ -330,36 +330,36 @@ def impact_portal():
 USERS = [
     {
         "id": "usr_101",
-        "email": "shelter@hopehaven.org",
+        "email": "shelter@apnagharjaipur.org",
         "password": "password123",
         "role": "shelter",
-        "name": "Hope Haven Community Kitchen",
-        "address": "452 Mission Street, Downtown",
-        "lat": 37.7885,
-        "lng": -122.4012,
-        "phone": "+1 (555) 234-5678"
+        "name": "Apna Ghar Ashram Jaipur",
+        "address": "Mansarovar, Jaipur, Rajasthan, India",
+        "lat": 26.8500,
+        "lng": 75.7700,
+        "phone": "+91 94140 12345"
     },
     {
         "id": "usr_102",
-        "email": "donor@techvertex.com",
+        "email": "donor@lmbjaipur.in",
         "password": "password123",
         "role": "donor",
-        "name": "TechVertex Main Cafeteria",
-        "address": "500 Howard St, Suite 300",
-        "lat": 37.7892,
-        "lng": -122.3985,
-        "phone": "+1 (555) 987-6543"
+        "name": "LMB (Laxmi Misthan Bhandar)",
+        "address": "Johari Bazar, Jaipur, Rajasthan, India",
+        "lat": 26.9180,
+        "lng": 75.8250,
+        "phone": "+91 98290 12345"
     },
     {
         "id": "usr_103",
-        "email": "driver@expressrescue.org",
+        "email": "driver@jaipurrescue.org",
         "password": "password123",
         "role": "driver",
-        "name": "David Chen",
-        "address": "800 Market St, SF",
-        "lat": 37.7850,
-        "lng": -122.4030,
-        "phone": "+1 (555) 444-1122"
+        "name": "Ramesh Sharma",
+        "address": "MI Road, Jaipur, Rajasthan, India",
+        "lat": 26.9150,
+        "lng": 75.8100,
+        "phone": "+91 98280 11223"
     }
 ]
 
@@ -646,31 +646,31 @@ def api_update_status(donation_id):
 def api_simulate_donation():
     simulated_items = [
         {
-            "donor": "Grand Hyatt Hotel Banquet Hall",
-            "title": "Fresh Buffet Roast Chicken & Grilled Veggies",
+            "donor": "Marriott Hotel Jaipur Banquet",
+            "title": "Fresh Royal Buffet Veg Pulao & Paneer Curry",
             "category": "Prepared Meals",
-            "weight": 32.0,
-            "servings": 75,
+            "weight": 35.0,
+            "servings": 80,
             "storage": "Heated Container",
-            "address": "345 Stockton St",
-            "lat": 37.7898,
-            "lng": -122.4068,
-            "expiry": 2.0,
-            "notes": "Post-event surplus, untouched, insulated hot boxes ready for instant loading.",
+            "address": "Ashram Marg, Tonk Road, Jaipur, Rajasthan, India",
+            "lat": 26.8520,
+            "lng": 75.7950,
+            "expiry": 2.5,
+            "notes": "Post-wedding event surplus, untouched, hot insulated boxes ready for pickup.",
             "photo": "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=500&q=80"
         },
         {
-            "donor": "Whole Foods Market Market St",
-            "title": "Chilled Organic Yogurt & Fresh Milk Cartons",
-            "category": "Dairy",
-            "weight": 14.5,
-            "servings": 35,
-            "storage": "Refrigerated",
-            "address": "1760 Market St",
-            "lat": 37.7720,
-            "lng": -122.4230,
-            "expiry": 4.0,
-            "notes": "Inventory overstock, sell-by date tomorrow, perfectly fresh cold chain intact.",
+            "donor": "Handi Restaurant Jaipur",
+            "title": "Fresh Tandoori Roti & Mixed Dal Trays",
+            "category": "Prepared Meals",
+            "weight": 20.0,
+            "servings": 50,
+            "storage": "Heated Container",
+            "address": "MI Road, Jaipur, Rajasthan, India",
+            "lat": 26.9160,
+            "lng": 75.8120,
+            "expiry": 3.0,
+            "notes": "Freshly prepared dinner surplus, sealed hot boxes.",
             "photo": "https://images.unsplash.com/photo-1563636619-e9143da7973b?auto=format&fit=crop&w=500&q=80"
         }
     ]
