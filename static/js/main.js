@@ -41,9 +41,9 @@ function getUserProfile() {
     } catch (e) {}
     return {
         role: 'donor',
-        name: 'LMB (Laxmi Misthan Bhandar)',
-        email: 'donor@lmbjaipur.in',
-        address: 'Johari Bazar, Jaipur, Rajasthan, India',
+        name: 'TechVertex Kitchen',
+        email: 'user@techvertex.org',
+        address: 'Jaipur, Rajasthan, India',
         lat: 26.9180,
         lng: 75.8250
     };
@@ -69,6 +69,25 @@ function initUserProfileNav() {
             <span style="opacity:0.6; font-size:0.75rem;">(${profile.role.toUpperCase()})</span>
         `;
     }
+}
+
+// Location & Profile Setup Modal Handler
+function completeWizard(event) {
+    event.preventDefault();
+    const roleElem = document.getElementById('wiz-role');
+    const roleVal = roleElem ? roleElem.value : 'donor';
+
+    const profile = {
+        role: roleVal,
+        name: document.getElementById('wiz-name').value || 'Food Rescue Partner',
+        address: document.getElementById('wiz-address').value || 'Jaipur, Rajasthan, India',
+        lat: 26.9124,
+        lng: 75.7873
+    };
+
+    saveUserProfile(profile);
+    closeModal('onboarding-modal');
+    showToast('👋 Profile Updated!', `Saved profile as <b>${escapeHtml(profile.name)}</b> (${profile.role.toUpperCase()})`, 'emerald');
 }
 
 // Google Maps Auth Failure Handler
@@ -538,42 +557,6 @@ async function handleNgoPostSubmit(event) {
 // Step-Wise Onboarding Wizard Logic
 function selectWizardRole(role) {
     selectedRole = role;
-    document.querySelectorAll('.role-option-card').forEach(card => card.classList.remove('selected'));
-    const targetCard = document.getElementById(`role-card-${role}`);
-    if (targetCard) targetCard.classList.add('selected');
-}
-
-function nextWizardStep(currentStep) {
-    if (currentStep === 1) {
-        document.getElementById('wizard-step-1').style.display = 'none';
-        document.getElementById('wizard-step-2').style.display = 'block';
-        document.getElementById('step-ind-1').classList.remove('active');
-        document.getElementById('step-ind-2').classList.add('active');
-    }
-}
-
-function prevWizardStep(currentStep) {
-    if (currentStep === 2) {
-        document.getElementById('wizard-step-2').style.display = 'none';
-        document.getElementById('wizard-step-1').style.display = 'block';
-        document.getElementById('step-ind-2').classList.remove('active');
-        document.getElementById('step-ind-1').classList.add('active');
-    }
-}
-
-function completeWizard(event) {
-    event.preventDefault();
-    const profile = {
-        role: selectedRole,
-        name: document.getElementById('wiz-name').value || 'Surplus Partner',
-        address: document.getElementById('wiz-address').value || 'Jaipur, Rajasthan, India',
-        lat: parseFloat(document.getElementById('wiz-lat').value || 26.9124),
-        lng: parseFloat(document.getElementById('wiz-lng').value || 75.7873)
-    };
-
-    saveUserProfile(profile);
-    closeModal('onboarding-modal');
-    showToast('👋 Welcome to Surplus-to-Shelter!', `Logged in as <b>${escapeHtml(profile.name)}</b> (${profile.role.toUpperCase()})`, 'emerald');
 }
 
 // Open Smart Match Modal

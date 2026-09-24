@@ -46,22 +46,19 @@
     <!-- Main Content Container -->
     <main class="container">
 
-        <!-- Live Demo Hackathon Banner -->
+        <!-- Live Geo-Routing Status Banner -->
         <div class="demo-banner">
             <div class="demo-info">
                 <div class="live-dot"></div>
                 <div>
-                    <strong style="color:white; font-family:var(--font-heading);">AmiHacks Track A Live Geo-Routing Engine</strong>
-                    <p style="font-size:0.83rem; color:var(--text-muted);">Real-time matching of restaurant food surplus to shelter & NGO requests within critical safety windows.</p>
+                    <strong style="color:white; font-family:var(--font-heading);">Real-Time Urban Food Rescue Engine</strong>
+                    <p style="font-size:0.83rem; color:var(--text-muted);">Connecting food donors, local shelters, and volunteer drivers seamlessly.</p>
                 </div>
             </div>
             <div style="display:flex; gap:0.5rem;">
-                <button onclick="openModal('onboarding-modal')" class="btn btn-secondary" style="font-size:0.85rem;">
-                    🔑 Guided Role Login
-                </button>
-                <button onclick="triggerSimulationStream()" class="btn btn-primary btn-pulse" style="font-size:0.85rem;">
-                    + Inject Simulated Surplus Event
-                </button>
+                <a href="/login" class="btn btn-primary" style="font-size:0.85rem;">
+                    🔑 Sign In / Location Setup
+                </a>
             </div>
         </div>
 
@@ -137,78 +134,33 @@
 
     </main>
 
-    <!-- Modal 1: Step-Wise Onboarding & Profile Login Modal -->
+    <!-- Modal 1: Account Profile & Location Modal -->
     <div class="modal-overlay" id="onboarding-modal">
-        <div class="modal-box" style="max-width: 620px;">
+        <div class="modal-box" style="max-width: 500px;">
             <div class="modal-header">
-                <h3 class="modal-title">🔑 Guided Step-Wise Onboarding Portal</h3>
+                <h3 class="modal-title">⚙️ Location & Profile Setup</h3>
                 <button class="btn-close" onclick="closeModal('onboarding-modal')">&times;</button>
             </div>
-            
-            <div class="onboarding-steps" style="margin-top:1rem;">
-                <div class="step-indicator active" id="step-ind-1">
-                    <span class="step-num">1</span>
-                    <span>Choose Role</span>
-                </div>
-                <div style="width:40px; height:2px; background:rgba(255,255,255,0.1);"></div>
-                <div class="step-indicator" id="step-ind-2">
-                    <span class="step-num">2</span>
-                    <span>Location & Profile</span>
-                </div>
-            </div>
 
-            <!-- Step 1: Role Selection -->
-            <div id="wizard-step-1">
-                <h4 style="color:white; font-family:var(--font-heading); margin-bottom:1rem; text-align:center;">Select your account role to enter:</h4>
-                <div class="role-card-grid">
-                    <div class="role-option-card selected" id="role-card-donor" onclick="selectWizardRole('donor')">
-                        <div class="role-icon">🍲</div>
-                        <h4>Food Donor</h4>
-                        <p>Restaurant, Caterer, Hotel, Supermarket</p>
-                    </div>
-                    <div class="role-option-card" id="role-card-shelter" onclick="selectWizardRole('shelter')">
-                        <div class="role-icon">🏠</div>
-                        <h4>NGO / Shelter</h4>
-                        <p>Community Kitchen, Food Bank, Shelter</p>
-                    </div>
-                    <div class="role-option-card" id="role-card-driver" onclick="selectWizardRole('driver')">
-                        <div class="role-icon">🚚</div>
-                        <h4>Logistics Driver</h4>
-                        <p>Volunteer Driver, Electric Cargo Van</p>
-                    </div>
+            <form onsubmit="completeWizard(event)" style="display:flex; flex-direction:column; gap:1rem; padding-top:0.5rem;">
+                <div>
+                    <label style="font-size:0.83rem; font-weight:600; color:var(--text-muted); display:block; margin-bottom:0.35rem;">Account Role *</label>
+                    <select id="wiz-role" class="form-control" required style="width:100%;">
+                        <option value="donor">🍲 Food Donor / Restaurant</option>
+                        <option value="shelter">🏠 NGO / Shelter</option>
+                        <option value="driver">🚚 Volunteer Driver</option>
+                    </select>
                 </div>
-                <button onclick="nextWizardStep(1)" class="btn btn-primary" style="width:100%;">Continue to Location & Profile &rarr;</button>
-            </div>
-
-            <!-- Step 2: Location & Details Form -->
-            <div id="wizard-step-2" style="display:none;">
-                <h4 style="color:white; font-family:var(--font-heading); margin-bottom:1rem;">Enter Your Organization & Precise Location:</h4>
-                <form onsubmit="completeWizard(event)" style="display:flex; flex-direction:column; gap:1rem;">
-                    <div>
-                        <label style="font-size:0.83rem; color:var(--text-muted);">Organization / Business Name:</label>
-                        <input type="text" id="wiz-name" placeholder="e.g. LMB (Laxmi Misthan Bhandar)" required style="width:100%; padding:0.65rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px; margin-top:0.25rem;">
-                    </div>
-                    <div>
-                        <label style="font-size:0.83rem; color:var(--text-muted);">Street Address / City Area (Rajasthan):</label>
-                        <input type="text" id="wiz-address" placeholder="e.g. Johari Bazar, Jaipur, Rajasthan, India" required style="width:100%; padding:0.65rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px; margin-top:0.25rem;">
-                    </div>
-                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.75rem;">
-                        <div>
-                            <label style="font-size:0.83rem; color:var(--text-muted);">Latitude (Rajasthan):</label>
-                            <input type="number" step="0.0001" id="wiz-lat" value="26.9180" required style="width:100%; padding:0.65rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px; margin-top:0.25rem;">
-                        </div>
-                        <div>
-                            <label style="font-size:0.83rem; color:var(--text-muted);">Longitude (Rajasthan):</label>
-                            <input type="number" step="0.0001" id="wiz-lng" value="75.8250" required style="width:100%; padding:0.65rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px; margin-top:0.25rem;">
-                        </div>
-                    </div>
-                    <div style="display:flex; gap:0.75rem; margin-top:0.5rem;">
-                        <button type="button" onclick="prevWizardStep(2)" class="btn btn-secondary" style="flex:1;">&larr; Back</button>
-                        <button type="submit" class="btn btn-primary" style="flex:2;">Complete Setup & Save Session</button>
-                    </div>
-                </form>
-            </div>
-
+                <div>
+                    <label style="font-size:0.83rem; font-weight:600; color:var(--text-muted); display:block; margin-bottom:0.35rem;">Organization / Business Name *</label>
+                    <input type="text" id="wiz-name" placeholder="e.g. Laxmi Restaurant or Apna Shelter" required class="form-control" style="width:100%;">
+                </div>
+                <div>
+                    <label style="font-size:0.83rem; font-weight:600; color:var(--text-muted); display:block; margin-bottom:0.35rem;">Street Address & Location *</label>
+                    <input type="text" id="wiz-address" placeholder="e.g. Johari Bazar, Jaipur, Rajasthan, India" required class="form-control" style="width:100%;">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%; padding:0.75rem; font-size:0.95rem; margin-top:0.5rem;">Save Profile & Update Session</button>
+            </form>
         </div>
     </div>
 

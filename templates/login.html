@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Account Login & Location Setup | Surplus-to-Shelter</title>
+    <title>Sign In & Account Access | Surplus-to-Shelter</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <style>
         .auth-container {
@@ -11,17 +11,17 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 2.5rem 1rem;
+            padding: 3rem 1.5rem;
         }
 
         .auth-card {
             width: 100%;
-            max-width: 640px;
+            max-width: 480px;
             background: rgba(15, 23, 42, 0.85);
             border: 1px solid var(--border-glass);
             backdrop-filter: blur(20px);
             border-radius: var(--radius-lg);
-            padding: 2.25rem;
+            padding: 2.5rem;
             box-shadow: var(--shadow-lg);
         }
 
@@ -29,9 +29,10 @@
             display: flex;
             gap: 0.5rem;
             background: rgba(30, 41, 59, 0.6);
-            padding: 0.3rem;
+            padding: 0.35rem;
             border-radius: var(--radius-md);
             margin-bottom: 1.75rem;
+            border: 1px solid var(--border-glass);
         }
 
         .auth-tab-btn {
@@ -54,37 +55,22 @@
             box-shadow: 0 4px 14px var(--primary-glow);
         }
 
-        .quick-demo-accounts {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 0.75rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .demo-acc-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-glass);
-            padding: 0.65rem 0.5rem;
-            border-radius: var(--radius-sm);
-            color: var(--text-main);
-            font-size: 0.82rem;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .demo-acc-btn:hover {
-            border-color: var(--primary);
-            background: rgba(16, 185, 129, 0.1);
-        }
-
-        .picker-map-box {
+        .form-control-simple {
             width: 100%;
-            height: 180px;
-            border-radius: var(--radius-sm);
+            padding: 0.75rem 1rem;
+            background: rgba(15, 23, 42, 0.8);
             border: 1px solid var(--border-glass);
-            margin-top: 0.5rem;
-            overflow: hidden;
+            color: white;
+            border-radius: 8px;
+            font-family: var(--font-main);
+            font-size: 0.92rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .form-control-simple:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
         }
     </style>
 </head>
@@ -114,123 +100,77 @@
     <main class="auth-container">
         <div class="auth-card">
 
-            <div style="text-align: center; margin-bottom: 1.5rem;">
-                <div style="font-size: 2.2rem; margin-bottom: 0.25rem;">🔑</div>
-                <h2 style="font-family:var(--font-heading); font-size:1.6rem; font-weight:700; color:white;">
-                    Surplus-to-Shelter Authentication Portal
+            <div style="text-align: center; margin-bottom: 1.75rem;">
+                <div style="font-size: 2.2rem; margin-bottom: 0.35rem;">🔐</div>
+                <h2 style="font-family:var(--font-heading); font-size:1.5rem; font-weight:700; color:white;">
+                    Account Sign In
                 </h2>
-                <p style="font-size:0.86rem; color:var(--text-muted); margin-top:0.25rem;">
-                    Sign in or register your Food Business or NGO to access real-time geo-matching.
+                <p style="font-size:0.86rem; color:var(--text-muted); margin-top:0.35rem;">
+                    Enter your credentials and location to access the food rescue network.
                 </p>
-            </div>
-
-            <!-- Quick One-Click Demo Logins -->
-            <div style="margin-bottom: 1.5rem;">
-                <label style="font-size:0.78rem; color:var(--text-muted); display:block; margin-bottom:0.5rem; text-align:center;">
-                    ⚡ One-Click Instant Demo Login (Rajasthan, India):
-                </label>
-                <div class="quick-demo-accounts">
-                    <button type="button" onclick="quickLogin('donor@lmbjaipur.in', 'donor')" class="demo-acc-btn">
-                        🍲 <b>LMB Jaipur</b><br><span style="font-size:0.73rem; opacity:0.7;">Restaurant Donor</span>
-                    </button>
-                    <button type="button" onclick="quickLogin('shelter@apnagharjaipur.org', 'shelter')" class="demo-acc-btn">
-                        🏠 <b>Apna Ghar Ashram</b><br><span style="font-size:0.73rem; opacity:0.7;">Jaipur NGO Shelter</span>
-                    </button>
-                    <button type="button" onclick="quickLogin('driver@jaipurrescue.org', 'driver')" class="demo-acc-btn">
-                        🚚 <b>Ramesh Sharma</b><br><span style="font-size:0.73rem; opacity:0.7;">Volunteer Driver</span>
-                    </button>
-                </div>
-            </div>
-
-            <div style="display:flex; align-items:center; gap:1rem; margin-bottom:1.5rem;">
-                <div style="flex:1; height:1px; background:rgba(255,255,255,0.08);"></div>
-                <span style="font-size:0.78rem; color:var(--text-dim);">OR SIGN IN WITH EMAIL</span>
-                <div style="flex:1; height:1px; background:rgba(255,255,255,0.08);"></div>
             </div>
 
             <!-- Auth Form Tab Switcher -->
             <div class="auth-tabs">
                 <button class="auth-tab-btn active" id="tab-login" onclick="switchAuthTab('login')">Sign In</button>
-                <button class="auth-tab-btn" id="tab-register" onclick="switchAuthTab('register')">Register New Account</button>
+                <button class="auth-tab-btn" id="tab-register" onclick="switchAuthTab('register')">Create Account</button>
             </div>
 
-            <!-- Form 1: Sign In -->
-            <form id="form-login" onsubmit="handleAuthLogin(event)" style="display:flex; flex-direction:column; gap:1rem;">
+            <!-- Form 1: Clean Sign In -->
+            <form id="form-login" onsubmit="handleAuthLogin(event)" style="display:flex; flex-direction:column; gap:1.1rem;">
                 <div>
-                    <label style="font-size:0.83rem; color:var(--text-muted);">Email Address:</label>
-                    <input type="email" id="login-email" placeholder="e.g. donor@lmbjaipur.in or shelter@apnagharjaipur.org" required style="width:100%; padding:0.7rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px; margin-top:0.3rem;">
+                    <label style="font-size:0.83rem; font-weight:600; color:var(--text-muted); display:block; margin-bottom:0.35rem;">User Email Address *</label>
+                    <input type="email" id="login-email" placeholder="name@domain.com" required class="form-control-simple">
                 </div>
                 <div>
-                    <label style="font-size:0.83rem; color:var(--text-muted);">Password:</label>
-                    <input type="password" id="login-password" value="password123" required style="width:100%; padding:0.7rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px; margin-top:0.3rem;">
+                    <label style="font-size:0.83rem; font-weight:600; color:var(--text-muted); display:block; margin-bottom:0.35rem;">Password *</label>
+                    <input type="password" id="login-password" placeholder="Enter your password" required class="form-control-simple">
                 </div>
                 <div>
-                    <label style="font-size:0.83rem; color:var(--text-muted);">Account Role:</label>
-                    <select id="login-role" style="width:100%; padding:0.7rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px; margin-top:0.3rem;">
+                    <label style="font-size:0.83rem; font-weight:600; color:var(--text-muted); display:block; margin-bottom:0.35rem;">Location / City *</label>
+                    <input type="text" id="login-location" placeholder="e.g. Jaipur, Rajasthan, India" required class="form-control-simple">
+                </div>
+                <div>
+                    <label style="font-size:0.83rem; font-weight:600; color:var(--text-muted); display:block; margin-bottom:0.35rem;">Account Role *</label>
+                    <select id="login-role" class="form-control-simple">
                         <option value="donor">🍲 Food Donor / Restaurant</option>
                         <option value="shelter">🏠 NGO / Shelter</option>
                         <option value="driver">🚚 Volunteer Driver</option>
                     </select>
                 </div>
-                <button type="submit" class="btn btn-primary" style="width:100%; padding:0.75rem; font-size:0.95rem; margin-top:0.5rem;">
-                    Sign In & Launch Map Workspace &rarr;
+                <button type="submit" class="btn btn-primary" style="width:100%; padding:0.8rem; font-size:0.95rem; margin-top:0.5rem; border-radius:8px;">
+                    Sign In & Access Dashboard &rarr;
                 </button>
             </form>
 
-            <!-- Form 2: Register New Account & Location Setup -->
-            <form id="form-register" onsubmit="handleAuthRegister(event)" style="display:none; flex-direction:column; gap:1rem;">
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.75rem;">
-                    <div>
-                        <label style="font-size:0.83rem; color:var(--text-muted);">Email Address *</label>
-                        <input type="email" id="reg-email" placeholder="name@organization.org" required style="width:100%; padding:0.65rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px; margin-top:0.25rem;">
-                    </div>
-                    <div>
-                        <label style="font-size:0.83rem; color:var(--text-muted);">Password *</label>
-                        <input type="password" id="reg-password" placeholder="Create password" required style="width:100%; padding:0.65rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px; margin-top:0.25rem;">
-                    </div>
-                </div>
-
+            <!-- Form 2: Clean Register New Account -->
+            <form id="form-register" onsubmit="handleAuthRegister(event)" style="display:none; flex-direction:column; gap:1.1rem;">
                 <div>
-                    <label style="font-size:0.83rem; color:var(--text-muted);">Select Account Role *</label>
-                    <div class="role-card-grid" style="margin-top:0.3rem; margin-bottom:0.5rem;">
-                        <div class="role-option-card selected" id="reg-role-card-donor" onclick="selectRegRole('donor')">
-                            <div class="role-icon" style="font-size:1.6rem;">🍲</div>
-                            <h4 style="font-size:0.88rem;">Restaurant / Donor</h4>
-                        </div>
-                        <div class="role-option-card" id="reg-role-card-shelter" onclick="selectRegRole('shelter')">
-                            <div class="role-icon" style="font-size:1.6rem;">🏠</div>
-                            <h4 style="font-size:0.88rem;">NGO / Shelter</h4>
-                        </div>
-                        <div class="role-option-card" id="reg-role-card-driver" onclick="selectRegRole('driver')">
-                            <div class="role-icon" style="font-size:1.6rem;">🚚</div>
-                            <h4 style="font-size:0.88rem;">Volunteer Driver</h4>
-                        </div>
-                    </div>
+                    <label style="font-size:0.83rem; font-weight:600; color:var(--text-muted); display:block; margin-bottom:0.35rem;">Organization / User Name *</label>
+                    <input type="text" id="reg-name" placeholder="e.g. Green Earth NGO or Central Kitchen" required class="form-control-simple">
                 </div>
-
                 <div>
-                    <label style="font-size:0.83rem; color:var(--text-muted);">Organization / Business Name *</label>
-                    <input type="text" id="reg-name" placeholder="e.g. Apna Ghar Ashram Jaipur or LMB Restaurant" required style="width:100%; padding:0.65rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px; margin-top:0.25rem;">
+                    <label style="font-size:0.83rem; font-weight:600; color:var(--text-muted); display:block; margin-bottom:0.35rem;">Email Address *</label>
+                    <input type="email" id="reg-email" placeholder="name@domain.com" required class="form-control-simple">
                 </div>
-
                 <div>
-                    <label style="font-size:0.83rem; color:var(--text-muted);">Street Address (Rajasthan, India) *</label>
-                    <input type="text" id="reg-address" placeholder="e.g. Johari Bazar, Jaipur, Rajasthan, India" required style="width:100%; padding:0.65rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px; margin-top:0.25rem;">
+                    <label style="font-size:0.83rem; font-weight:600; color:var(--text-muted); display:block; margin-bottom:0.35rem;">Password *</label>
+                    <input type="password" id="reg-password" placeholder="Create a password" required class="form-control-simple">
                 </div>
-
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.75rem;">
-                    <div>
-                        <label style="font-size:0.8rem; color:var(--text-muted);">Latitude (Rajasthan):</label>
-                        <input type="number" step="0.0001" id="reg-lat" value="26.9124" required style="width:100%; padding:0.55rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px;">
-                    </div>
-                    <div>
-                        <label style="font-size:0.8rem; color:var(--text-muted);">Longitude (Rajasthan):</label>
-                        <input type="number" step="0.0001" id="reg-lng" value="75.7873" required style="width:100%; padding:0.55rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px;">
-                    </div>
+                <div>
+                    <label style="font-size:0.83rem; font-weight:600; color:var(--text-muted); display:block; margin-bottom:0.35rem;">Street Address & Location *</label>
+                    <input type="text" id="reg-address" placeholder="e.g. Johari Bazar, Jaipur, Rajasthan, India" required class="form-control-simple">
                 </div>
-
-                <button type="submit" class="btn btn-primary" style="width:100%; padding:0.75rem; font-size:0.95rem; margin-top:0.5rem;">
-                    Create Account & Enter Dashboard &rarr;
+                <div>
+                    <label style="font-size:0.83rem; font-weight:600; color:var(--text-muted); display:block; margin-bottom:0.35rem;">Account Role *</label>
+                    <select id="reg-role" class="form-control-simple">
+                        <option value="donor">🍲 Food Donor / Restaurant</option>
+                        <option value="shelter">🏠 NGO / Shelter</option>
+                        <option value="driver">🚚 Volunteer Driver</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%; padding:0.8rem; font-size:0.95rem; margin-top:0.5rem; border-radius:8px;">
+                    Register Account & Access &rarr;
                 </button>
             </form>
 
@@ -257,8 +197,6 @@
 
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script>
-        let regRole = 'donor';
-
         function switchAuthTab(tab) {
             const formLogin = document.getElementById('form-login');
             const formRegister = document.getElementById('form-register');
@@ -278,35 +216,25 @@
             }
         }
 
-        function selectRegRole(role) {
-            regRole = role;
-            document.querySelectorAll('#form-register .role-option-card').forEach(card => card.classList.remove('selected'));
-            const target = document.getElementById(`reg-role-card-${role}`);
-            if (target) target.classList.add('selected');
-        }
-
-        async function quickLogin(email, role) {
-            document.getElementById('login-email').value = email;
-            document.getElementById('login-role').value = role;
-            await handleAuthLogin(new Event('submit'));
-        }
-
         async function handleAuthLogin(event) {
             if (event && event.preventDefault) event.preventDefault();
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
+            const location = document.getElementById('login-location').value;
             const role = document.getElementById('login-role').value;
 
             try {
                 const res = await fetch('/api/auth/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password, role })
+                    body: JSON.stringify({ email, password, role, address: location })
                 }).then(r => r.json());
 
                 if (res.success && res.user) {
+                    // Update user profile location if provided
+                    if (location) res.user.address = location;
                     saveUserProfile(res.user);
-                    showToast('🎉 Login Successful!', `Welcome back, ${escapeHtml(res.user.name)}! Redirecting to map workspace...`, 'emerald');
+                    showToast('🎉 Login Successful!', `Welcome back, ${escapeHtml(res.user.name)}! Redirecting to workspace...`, 'emerald');
                     setTimeout(() => {
                         window.location.href = '/';
                     }, 800);
@@ -322,19 +250,18 @@
             const password = document.getElementById('reg-password').value;
             const name = document.getElementById('reg-name').value;
             const address = document.getElementById('reg-address').value;
-            const lat = parseFloat(document.getElementById('reg-lat').value);
-            const lng = parseFloat(document.getElementById('reg-lng').value);
+            const role = document.getElementById('reg-role').value;
 
             try {
                 const res = await fetch('/api/auth/register', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password, role: regRole, name, address, lat, lng })
+                    body: JSON.stringify({ email, password, role, name, address, lat: 26.9124, lng: 75.7873 })
                 }).then(r => r.json());
 
                 if (res.success && res.user) {
                     saveUserProfile(res.user);
-                    showToast('🎉 Account Registered!', `Welcome to Surplus-to-Shelter, ${escapeHtml(res.user.name)}! Redirecting to map workspace...`, 'purple');
+                    showToast('🎉 Account Registered!', `Welcome, ${escapeHtml(res.user.name)}! Redirecting to workspace...`, 'purple');
                     setTimeout(() => {
                         window.location.href = '/';
                     }, 800);
@@ -348,3 +275,4 @@
     </script>
 </body>
 </html>
+
