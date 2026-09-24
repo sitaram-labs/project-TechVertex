@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surplus-to-Shelter | Real-Time Food Rescue Routing</title>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+
+    <!-- Navigation Header -->
+    <nav class="navbar">
+        <a href="/" class="brand-logo">
+            <div class="brand-icon">🌱</div>
+            <span>Surplus<span style="color:var(--primary)">To</span>Shelter</span>
+        </a>
+
+        <ul class="nav-links">
+            <li class="nav-item"><a href="/" class="active">📊 Overview</a></li>
+            <li class="nav-item"><a href="/donor">🍲 Donor Intake</a></li>
+            <li class="nav-item"><a href="/shelter">🏠 Shelter Capacity</a></li>
+            <li class="nav-item"><a href="/driver">🚚 Driver Dispatch</a></li>
+            <li class="nav-item"><a href="/impact">📈 ESG Impact</a></li>
+            <li class="nav-item"><a href="#" onclick="openModal('team-modal')">👥 Team & Contact</a></li>
+        </ul>
+
+        <div class="nav-actions">
+            <button onclick="triggerSimulationStream()" class="btn btn-secondary" style="border-color:var(--accent-purple); color:var(--accent-purple);">
+                ⚡ Hackathon Stream Demo
+            </button>
+            <a href="/donor" class="btn btn-primary">+ Post Surplus Food</a>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="container">
+
+        <!-- Live Demo Hackathon Banner -->
+        <div class="demo-banner">
+            <div class="demo-info">
+                <div class="live-dot"></div>
+                <div>
+                    <strong style="color:white; font-family:var(--font-heading);">AmiHacks Track A Live Routing Engine</strong>
+                    <p style="font-size:0.83rem; color:var(--text-muted);">Real-time geo-spatial matching of surplus food to shelters within 2-6 hour safety windows.</p>
+                </div>
+            </div>
+            <button onclick="triggerSimulationStream()" class="btn btn-primary btn-pulse" style="font-size:0.85rem;">
+                + Inject Simulated Surplus Event
+            </button>
+        </div>
+
+        <!-- Metric Summary Cards -->
+        <section class="dashboard-metrics">
+            <div class="metric-card">
+                <div class="metric-icon emerald">🍲</div>
+                <div class="metric-data">
+                    <h3 id="metric-meals">-- Meals</h3>
+                    <p>Total Servings Rescued</p>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon amber">⚖️</div>
+                <div class="metric-data">
+                    <h3 id="metric-weight">-- kg</h3>
+                    <p>Food Waste Diverted</p>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon blue">🌍</div>
+                <div class="metric-data">
+                    <h3 id="metric-co2">-- kg</h3>
+                    <p>CO₂e Emissions Saved</p>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon purple">⚡</div>
+                <div class="metric-data">
+                    <h3 id="metric-active">-- Active</h3>
+                    <p>Live Rescues In Progress</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Map & Feed Grid -->
+        <div class="grid-main">
+            <!-- Map View Panel -->
+            <div class="map-panel">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <span style="color:var(--primary);">🗺️ Live Urban Dispatch Map</span>
+                    </div>
+                    <div style="font-size:0.8rem; color:var(--text-muted); display:flex; gap:1rem;">
+                        <span>🟢 Donor</span>
+                        <span>🟣 Shelter</span>
+                        <span>🟡 Route</span>
+                    </div>
+                </div>
+                <div id="map"></div>
+            </div>
+
+            <!-- Real-Time Surplus Food Feed Panel -->
+            <div class="feed-panel">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <span>📦 Active Food Postings</span>
+                    </div>
+                    <span style="font-size:0.8rem; color:var(--primary); background:rgba(16,185,129,0.1); padding:0.2rem 0.5rem; border-radius:4px;">Live Feed</span>
+                </div>
+                <div class="feed-list" id="donations-feed">
+                    <p style="color:var(--text-muted); text-align:center; padding:2rem;">Loading live feed...</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Smart Match Modal Popup -->
+    <div class="modal-overlay" id="match-modal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 class="modal-title">⚡ Smart Geo-Matching Engine</h3>
+                <button class="btn-close" onclick="closeModal('match-modal')">&times;</button>
+            </div>
+            <div id="match-candidates">
+                <!-- Dynamically populated via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Team & NGO Contact Modal -->
+    <div class="modal-overlay" id="team-modal">
+        <div class="modal-box" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3 class="modal-title">👥 TechVertex Team & NGO Contact</h3>
+                <button class="btn-close" onclick="closeModal('team-modal')">&times;</button>
+            </div>
+            <div style="padding: 1rem 0;">
+                <div style="background: rgba(16,185,129,0.1); border: 1px solid var(--border-highlight); padding: 1rem; border-radius: var(--radius-sm); margin-bottom: 1.5rem;">
+                    <h4 style="color:var(--primary); margin-bottom:0.25rem;">🌱 Surplus-to-Shelter Project Lead</h4>
+                    <p style="font-size:1.05rem; font-weight:700; color:white;">Sitaram</p>
+                    <p style="font-size:0.85rem; color:var(--text-muted);">Lead Architect & Founder • Open for NGO Partnerships & Food Rescue Collaboration</p>
+                </div>
+
+                <h4 style="font-family:var(--font-heading); margin-bottom:0.75rem;">🏆 Hackathon Core Team Members:</h4>
+                <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:0.75rem; margin-bottom:1.5rem;">
+                    <div style="background:rgba(255,255,255,0.05); padding:0.75rem; border-radius:8px; border:1px solid var(--border-glass);">
+                        <strong style="color:var(--primary);">⭐ Sitaram</strong>
+                        <p style="font-size:0.8rem; color:var(--text-muted);">Project & Backend Lead</p>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.05); padding:0.75rem; border-radius:8px; border:1px solid var(--border-glass);">
+                        <strong style="color:white;">✨ Rani</strong>
+                        <p style="font-size:0.8rem; color:var(--text-muted);">UI/UX & Frontend Developer</p>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.05); padding:0.75rem; border-radius:8px; border:1px solid var(--border-glass);">
+                        <strong style="color:white;">✨ Juhi</strong>
+                        <p style="font-size:0.8rem; color:var(--text-muted);">Operations & Logistics Analyst</p>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.05); padding:0.75rem; border-radius:8px; border:1px solid var(--border-glass);">
+                        <strong style="color:white;">✨ Jatin</strong>
+                        <p style="font-size:0.8rem; color:var(--text-muted);">Data Engine & Integration</p>
+                    </div>
+                </div>
+
+                <h4 style="font-family:var(--font-heading); margin-bottom:0.75rem;">📩 NGO & Donor Direct Outreach:</h4>
+                <form onsubmit="handleContactSubmit(event)" style="display:flex; flex-direction:column; gap:0.75rem;">
+                    <input type="text" placeholder="Your Name / Organization / NGO" required style="width:100%; padding:0.6rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px;">
+                    <input type="email" placeholder="Your Email Address or Phone Number" required style="width:100%; padding:0.6rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px;">
+                    <textarea placeholder="Message for Sitaram & Team (e.g. NGO partnership request, food pickup query)" rows="3" required style="width:100%; padding:0.6rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px;"></textarea>
+                    <button type="submit" class="btn btn-primary" style="width:100%;">Send Direct Inquiry to Sitaram</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Custom Frontend JS -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
+

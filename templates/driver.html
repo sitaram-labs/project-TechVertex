@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver Dispatch View | Surplus-to-Shelter</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="/" class="brand-logo">
+            <div class="brand-icon">🌱</div>
+            <span>Surplus<span style="color:var(--primary)">To</span>Shelter</span>
+        </a>
+        <ul class="nav-links">
+            <li class="nav-item"><a href="/">📊 Overview</a></li>
+            <li class="nav-item"><a href="/donor">🍲 Donor Intake</a></li>
+            <li class="nav-item"><a href="/shelter">🏠 Shelter Capacity</a></li>
+            <li class="nav-item"><a href="/driver" class="active">🚚 Driver Dispatch</a></li>
+            <li class="nav-item"><a href="/impact">📈 ESG Impact</a></li>
+            <li class="nav-item"><a href="/#team-modal" onclick="window.location.href='/?open=team-modal'">👥 Team & Contact</a></li>
+        </ul>
+        <div class="nav-actions">
+            <a href="/" class="btn btn-secondary">← Back to Map</a>
+        </div>
+    </nav>
+
+    <main class="container" style="max-width:900px; padding-top: 2rem;">
+
+        <div style="margin-bottom: 2rem;">
+            <h1 style="font-family:var(--font-heading); font-size: 2rem; font-weight:700;">Volunteer Driver Dispatch Console</h1>
+            <p style="color:var(--text-muted);">Real-time pickup routes, safety timers, and 1-click status transitions.</p>
+        </div>
+
+        <div id="driver-assignments" style="display:flex; flex-direction:column; gap:1.25rem;">
+            <p style="color:var(--text-muted);">Loading active dispatch assignments...</p>
+        </div>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', loadDriverAssignments);
+
+        async function loadDriverAssignments() {
+            const container = document.getElementById('driver-assignments');
+            try {
+                const res = await fetch('/api/donations').then(r => r.json());
+                const active = (res.donations || []).filter(d => d.status === 'Matched' || d.status === 'In Transit');
+
+                if (active.length === 0) {
+                    container.innerHTML = `
+                        <div style="background:var(--bg-card); border:1px solid var(--border-glass); padding:3rem; text-align:center; border-radius:var(--radius-md);">
+                            <h3 style="color:var(--text-muted); margin-bottom:0.5rem;">🎉 All Dispatched Deliveries Completed!</h3>
+                            <p style="font-size:0.88rem; color:var(--text-dim);">No pending pickup tasks assigned right now. Check back when a donor posts new surplus food.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                let html = '';
+                active.forEach(d => {
+                    html += `
+                    <div style="background:var(--bg-card); border:1px solid var(--border-highlight); border-radius:var(--radius-md); padding:1.5rem;">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:1rem;">
+                            <div>
+                                <span class="badge-status ${d.status}">${d.status}</span>
+                                <h3 style="font-family:var(--font-heading); font-size:1.35rem; font-weight:700; margin-top:0.35rem;">${escapeHtml(d.food_title)}</h3>
+                                <p style="font-size:0.85rem; color:var(--text-muted);">Assigned Driver: <b>${escapeHtml(d.driver_name || 'Volunteer')}</b></p>
+                            </div>
+                            <div style="text-align:right;">
+                                <span style="font-weight:700; color:var(--accent-amber); font-size:0.9rem;">⏱️ ${d.time_remaining_str}</span>
+                                <div style="font-size:0.8rem; color:var(--text-muted);">${d.weight_kg} kg (${d.servings} servings)</div>
+                            </div>
+                        </div>
+
+                        <!-- Route Cards -->
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1.25rem;">
+                            <div style="background:rgba(30,41,59,0.5); padding:1rem; border-radius:8px; border:1px solid rgba(255,255,255,0.05);">
+                                <small style="color:var(--primary); font-weight:600;">STEP 1: PICKUP DONOR</small>
+                                <h4 style="font-size:1rem; margin:0.2rem 0;">${escapeHtml(d.donor_name)}</h4>
+                                <p style="font-size:0.82rem; color:var(--text-muted);">📍 ${escapeHtml(d.location.address)}</p>
+                                <p style="font-size:0.8rem; color:var(--text-dim); margin-top:0.3rem;">Notes: ${escapeHtml(d.notes || 'None')}</p>
+                            </div>
+
+                            <div style="background:rgba(30,41,59,0.5); padding:1rem; border-radius:8px; border:1px solid rgba(255,255,255,0.05);">
+                                <small style="color:var(--accent-purple); font-weight:600;">STEP 2: DROP-OFF SHELTER</small>
+                                <h4 style="font-size:1rem; margin:0.2rem 0;">${escapeHtml(d.matched_shelter_name || 'Shelter Target')}</h4>
+                                <p style="font-size:0.82rem; color:var(--text-muted);">📍 Central Shelter Hub</p>
+                                <p style="font-size:0.8rem; color:var(--text-dim); margin-top:0.3rem;">Storage: ${escapeHtml(d.storage_type)}</p>
+                            </div>
+                        </div>
+
+                        <!-- Action Controls -->
+                        <div style="display:flex; justify-content:flex-end; gap:0.75rem; border-top:1px solid rgba(255,255,255,0.05); padding-top:1rem;">
+                            ${d.status === 'Matched' ? 
+                                `<button onclick="updateStatus('${d.id}', 'In Transit')" class="btn btn-primary">🚚 Confirm Pickup (Start Route)</button>` : 
+                                `<button onclick="updateStatus('${d.id}', 'Delivered')" class="btn btn-primary" style="background:linear-gradient(135deg,#059669,#047857);">✅ Confirm Handover at Shelter</button>`
+                            }
+                        </div>
+                    </div>
+                    `;
+                });
+
+                container.innerHTML = html;
+            } catch (err) {
+                container.innerHTML = '<p style="color:var(--accent-rose);">Failed to load dispatch tasks.</p>';
+            }
+        }
+
+        async function updateStatus(donationId, newStatus) {
+            try {
+                const res = await fetch(`/api/status/${donationId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: newStatus })
+                }).then(r => r.json());
+
+                if (res.success) {
+                    loadDriverAssignments();
+                    if (newStatus === 'Delivered') {
+                        alert("🎉 Rescue Delivered Successfully! Metrics updated.");
+                    }
+                }
+            } catch (err) {
+                alert("Status update failed.");
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+    </script>
+</body>
+</html>

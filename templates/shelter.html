@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shelter Capacity Portal | Surplus-to-Shelter</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="/" class="brand-logo">
+            <div class="brand-icon">🌱</div>
+            <span>Surplus<span style="color:var(--primary)">To</span>Shelter</span>
+        </a>
+        <ul class="nav-links">
+            <li class="nav-item"><a href="/">📊 Overview</a></li>
+            <li class="nav-item"><a href="/donor">🍲 Donor Intake</a></li>
+            <li class="nav-item"><a href="/shelter" class="active">🏠 Shelter Capacity</a></li>
+            <li class="nav-item"><a href="/driver">🚚 Driver Dispatch</a></li>
+            <li class="nav-item"><a href="/impact">📈 ESG Impact</a></li>
+            <li class="nav-item"><a href="/#team-modal" onclick="window.location.href='/?open=team-modal'">👥 Team & Contact</a></li>
+        </ul>
+        <div class="nav-actions">
+            <a href="/" class="btn btn-secondary">← Back to Map</a>
+        </div>
+    </nav>
+
+    <main class="container" style="padding-top: 2rem;">
+
+        <div style="margin-bottom: 2rem;">
+            <h1 style="font-family:var(--font-heading); font-size: 2rem; font-weight:700;">Shelter Capacity & Acceptance Portal</h1>
+            <p style="color:var(--text-muted);">Manage real-time meal capacity, refrigeration status, and incoming food rescue deliveries.</p>
+        </div>
+
+        <div id="shelters-list" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap:1.5rem;">
+            <p style="color:var(--text-muted);">Loading shelter profiles...</p>
+        </div>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', loadShelters);
+
+        async function loadShelters() {
+            const container = document.getElementById('shelters-list');
+            try {
+                const res = await fetch('/api/shelters').then(r => r.json());
+                const shelters = res.shelters || [];
+
+                let html = '';
+                shelters.forEach(s => {
+                    const available = s.capacity_servings - s.current_occupancy;
+                    const pct = Math.round((s.current_occupancy / s.capacity_servings) * 100);
+                    
+                    html += `
+                    <div style="background:var(--bg-card); border:1px solid var(--border-glass); border-radius:var(--radius-md); padding:1.5rem;">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:1rem;">
+                            <div>
+                                <h3 style="font-family:var(--font-heading); font-size:1.25rem; font-weight:600; color:var(--primary);">${escapeHtml(s.name)}</h3>
+                                <p style="font-size:0.83rem; color:var(--text-muted);">📍 ${escapeHtml(s.address)}</p>
+                            </div>
+                            <span style="background:rgba(139,92,246,0.15); color:var(--accent-purple); padding:0.25rem 0.6rem; border-radius:12px; font-size:0.8rem; font-weight:600;">
+                                ${s.fridge_available ? 'Cold Storage ✅' : 'Ambient Only ⚠️'}
+                            </span>
+                        </div>
+
+                        <!-- Capacity Meter -->
+                        <div style="margin-bottom:1.25rem;">
+                            <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:0.4rem;">
+                                <span style="color:var(--text-muted);">Current Capacity Occupancy:</span>
+                                <strong>${s.current_occupancy} / ${s.capacity_servings} meals (${pct}%)</strong>
+                            </div>
+                            <div style="width:100%; height:10px; background:rgba(255,255,255,0.08); border-radius:5px; overflow:hidden;">
+                                <div style="width:${pct}%; height:100%; background:linear-gradient(90deg, #10b981, #f59e0b);"></div>
+                            </div>
+                        </div>
+
+                        <div style="font-size:0.85rem; margin-bottom:1rem;">
+                            <span style="color:var(--text-muted);">Accepted Categories:</span><br>
+                            <div style="display:flex; flex-wrap:wrap; gap:0.4rem; margin-top:0.3rem;">
+                                ${s.accepts_categories.map(c => `<span style="background:rgba(255,255,255,0.06); padding:0.2rem 0.5rem; border-radius:4px; font-size:0.78rem;">${c}</span>`).join('')}
+                            </div>
+                        </div>
+
+                        <div style="border-top:1px solid rgba(255,255,255,0.05); padding-top:1rem; display:flex; justify-content:space-between; align-items:center;">
+                            <span style="font-size:0.82rem; color:var(--text-muted);">📞 ${s.contact_person}</span>
+                            <button onclick="updateOccupancy('${s.id}', ${s.current_occupancy})" class="btn btn-secondary" style="padding:0.4rem 0.8rem; font-size:0.82rem;">⚙️ Update Occupancy</button>
+                        </div>
+                    </div>
+                    `;
+                });
+
+                container.innerHTML = html;
+            } catch (err) {
+                container.innerHTML = '<p style="color:var(--accent-rose);">Failed to load shelters.</p>';
+            }
+        }
+
+        async function updateOccupancy(shelterId, currentVal) {
+            const newVal = prompt("Enter new current meal count in shelter storage:", currentVal);
+            if (newVal !== null && !isNaN(newVal)) {
+                try {
+                    const res = await fetch('/api/shelters', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ shelter_id: shelterId, current_occupancy: parseInt(newVal) })
+                    }).then(r => r.json());
+
+                    if (res.success) {
+                        loadShelters();
+                    }
+                } catch (err) {
+                    alert("Update failed.");
+                }
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+    </script>
+</body>
+</html>

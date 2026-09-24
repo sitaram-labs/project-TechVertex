@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESG & Tax Impact Analytics | Surplus-to-Shelter</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="/" class="brand-logo">
+            <div class="brand-icon">🌱</div>
+            <span>Surplus<span style="color:var(--primary)">To</span>Shelter</span>
+        </a>
+        <ul class="nav-links">
+            <li class="nav-item"><a href="/">📊 Overview</a></li>
+            <li class="nav-item"><a href="/donor">🍲 Donor Intake</a></li>
+            <li class="nav-item"><a href="/shelter">🏠 Shelter Capacity</a></li>
+            <li class="nav-item"><a href="/driver">🚚 Driver Dispatch</a></li>
+            <li class="nav-item"><a href="/impact" class="active">📈 ESG Impact</a></li>
+            <li class="nav-item"><a href="/#team-modal" onclick="window.location.href='/?open=team-modal'">👥 Team & Contact</a></li>
+        </ul>
+        <div class="nav-actions">
+            <button onclick="window.print()" class="btn btn-secondary">📄 Export PDF Report</button>
+        </div>
+    </nav>
+
+    <main class="container" style="padding-top: 2rem;">
+
+        <div style="margin-bottom: 2rem;">
+            <h1 style="font-family:var(--font-heading); font-size: 2rem; font-weight:700;">Community Impact & ESG Audit Report</h1>
+            <p style="color:var(--text-muted);">Quantified environmental diversion metrics, tax deduction valuations, and waste reduction statistics.</p>
+        </div>
+
+        <!-- Metrics Grid -->
+        <section class="dashboard-metrics">
+            <div class="metric-card">
+                <div class="metric-icon emerald">🍲</div>
+                <div class="metric-data">
+                    <h3 id="imp-meals">--</h3>
+                    <p>Total Meals Rescued</p>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon amber">⚖️</div>
+                <div class="metric-data">
+                    <h3 id="imp-weight">--</h3>
+                    <p>Food Waste Diverted (kg)</p>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon blue">🌍</div>
+                <div class="metric-data">
+                    <h3 id="imp-co2">--</h3>
+                    <p>CO₂e Methane Avoided (kg)</p>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon purple">💰</div>
+                <div class="metric-data">
+                    <h3 id="imp-usd">--</h3>
+                    <p>Est. Tax Deduction Value</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Detailed Breakdown Panels -->
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem; margin-top:1.5rem;">
+            
+            <div style="background:var(--bg-card); border:1px solid var(--border-glass); border-radius:var(--radius-md); padding:1.5rem;">
+                <h3 style="font-family:var(--font-heading); font-size:1.2rem; margin-bottom:1rem; color:var(--primary);">🌱 Environmental Footprint Formula</h3>
+                <ul style="color:var(--text-muted); font-size:0.9rem; line-height:1.8; list-style-position:inside;">
+                    <li><b>Food Waste Multiplier:</b> Every 1.0 kg of food rescued prevents 1.90 kg of CO₂e landfill methane emissions.</li>
+                    <li><b>Meal Equivalent Factor:</b> 1 Standard Meal = 0.42 kg of edible food.</li>
+                    <li><b>IRS Tax Valuation:</b> Estimated $3.50 fair market value per meal saved for donor corporate tax credit documentation.</li>
+                    <li><b>Rescue Logistics Efficiency:</b> Average pickup-to-delivery time is 38 minutes.</li>
+                </ul>
+            </div>
+
+            <div style="background:var(--bg-card); border:1px solid var(--border-glass); border-radius:var(--radius-md); padding:1.5rem;">
+                <h3 style="font-family:var(--font-heading); font-size:1.2rem; margin-bottom:1rem; color:var(--primary);">📦 Rescued Food Category Breakdown</h3>
+                <div id="category-breakdown" style="display:flex; flex-direction:column; gap:0.75rem;">
+                    <p style="color:var(--text-muted);">Loading category stats...</p>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', loadImpactData);
+
+        async function loadImpactData() {
+            try {
+                const stats = await fetch('/api/analytics').then(r => r.json());
+
+                document.getElementById('imp-meals').textContent = stats.total_servings_rescued.toLocaleString() + " Meals";
+                document.getElementById('imp-weight').textContent = stats.total_weight_kg.toFixed(1) + " kg";
+                document.getElementById('imp-co2').textContent = stats.co2e_saved_kg.toFixed(1) + " kg CO₂e";
+                document.getElementById('imp-usd').textContent = "$" + stats.financial_value_saved_usd.toLocaleString();
+
+                const catContainer = document.getElementById('category-breakdown');
+                let html = '';
+                const cats = stats.categories_breakdown || {};
+                const total = stats.total_weight_kg || 1;
+
+                Object.keys(cats).forEach(cat => {
+                    const weight = cats[cat];
+                    const pct = Math.round((weight / total) * 100);
+                    html += `
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:0.25rem;">
+                            <span><b>${cat}</b></span>
+                            <span style="color:var(--text-muted);">${weight.toFixed(1)} kg (${pct}%)</span>
+                        </div>
+                        <div style="width:100%; height:8px; background:rgba(255,255,255,0.06); border-radius:4px; overflow:hidden;">
+                            <div style="width:${pct}%; height:100%; background:var(--primary);"></div>
+                        </div>
+                    </div>
+                    `;
+                });
+
+                catContainer.innerHTML = html;
+            } catch (err) {
+                console.error("Failed to load impact stats", err);
+            }
+        }
+    </script>
+</body>
+</html>

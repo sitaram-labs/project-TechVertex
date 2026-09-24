@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donor Intake Portal | Surplus-to-Shelter</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="/" class="brand-logo">
+            <div class="brand-icon">🌱</div>
+            <span>Surplus<span style="color:var(--primary)">To</span>Shelter</span>
+        </a>
+        <ul class="nav-links">
+            <li class="nav-item"><a href="/">📊 Overview</a></li>
+            <li class="nav-item"><a href="/donor" class="active">🍲 Donor Intake</a></li>
+            <li class="nav-item"><a href="/shelter">🏠 Shelter Capacity</a></li>
+            <li class="nav-item"><a href="/driver">🚚 Driver Dispatch</a></li>
+            <li class="nav-item"><a href="/impact">📈 ESG Impact</a></li>
+            <li class="nav-item"><a href="/#team-modal" onclick="window.location.href='/?open=team-modal'">👥 Team & Contact</a></li>
+        </ul>
+        <div class="nav-actions">
+            <a href="/" class="btn btn-secondary">← Back to Map</a>
+        </div>
+    </nav>
+
+    <main class="container" style="max-width: 900px; padding-top: 2rem;">
+        
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <h1 style="font-family:var(--font-heading); font-size: 2.2rem; font-weight:700;">Post Surplus Food Donation</h1>
+            <p style="color:var(--text-muted);">Connect unsold edible food with nearby shelters in under 60 seconds.</p>
+        </div>
+
+        <!-- Preset Quick Fill Buttons -->
+        <div style="background:var(--bg-card); border:1px solid var(--border-glass); border-radius:var(--radius-md); padding:1.25rem; margin-bottom:2rem;">
+            <label class="form-label" style="margin-bottom:0.75rem;">⚡ One-Click Presets for Fast Intake:</label>
+            <div style="display:flex; flex-wrap:wrap; gap:0.75rem;">
+                <button type="button" onclick="fillPreset('catering')" class="btn btn-secondary" style="font-size:0.85rem;">🥗 Hotel Catering Surplus (45 Servings)</button>
+                <button type="button" onclick="fillPreset('bakery')" class="btn btn-secondary" style="font-size:0.85rem;">🥐 Bakery Day-End Items (30 Servings)</button>
+                <button type="button" onclick="fillPreset('produce')" class="btn btn-secondary" style="font-size:0.85rem;">🍎 Grocery Ripe Produce (60 Servings)</button>
+            </div>
+        </div>
+
+        <!-- Intake Form -->
+        <div style="background:var(--bg-card); border:1px solid var(--border-glass); border-radius:var(--radius-md); padding:2rem;">
+            <form id="donor-form" onsubmit="handleDonorSubmit(event)">
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Donor Business / Facility Name *</label>
+                        <input type="text" id="donor_name" class="form-control" placeholder="e.g., Downtown Bistro & Bar" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Food Title / Description *</label>
+                        <input type="text" id="food_title" class="form-control" placeholder="e.g., Tray-Sealed Lasagna & Salad Trays" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Food Category *</label>
+                        <select id="category" class="form-control" required>
+                            <option value="Prepared Meals">Prepared Meals (Hot/Cold)</option>
+                            <option value="Bakery">Bakery & Breads</option>
+                            <option value="Produce">Fresh Fruits & Vegetables</option>
+                            <option value="Dairy">Dairy & Refrigerated Items</option>
+                            <option value="Packaged">Packaged Non-Perishables</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Storage / Temp Requirement *</label>
+                        <select id="storage_type" class="form-control" required>
+                            <option value="Ambient">Ambient Room Temp</option>
+                            <option value="Refrigerated">Refrigerated Storage</option>
+                            <option value="Heated Container">Heated Insulated Container</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Estimated Servings *</label>
+                        <input type="number" id="servings" class="form-control" value="30" min="5" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Total Weight (kg) *</label>
+                        <input type="number" step="0.5" id="weight_kg" class="form-control" value="12.0" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Safety / Expiry Window (Hours) *</label>
+                        <select id="expiry_hours" class="form-control" required>
+                            <option value="2.0">🔥 2 Hours (Urgent Prepared Food)</option>
+                            <option value="4.0" selected>⏱️ 4 Hours (Standard Safe Window)</option>
+                            <option value="6.0">⏰ 6 Hours (Extended Shelf Life)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Pickup Street Address *</label>
+                        <input type="text" id="address" class="form-control" placeholder="e.g., 500 Howard St, Suite 300" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Notes for Volunteer Driver / Shelter Staff</label>
+                    <textarea id="notes" class="form-control" rows="3" placeholder="e.g., Loading dock behind building. Call manager upon arrival."></textarea>
+                </div>
+
+                <div style="display:flex; justify-content:flex-end; gap:1rem; margin-top:1.5rem;">
+                    <a href="/" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary" style="padding:0.75rem 2rem;">🚀 Post & Auto-Match Shelter</button>
+                </div>
+
+            </form>
+        </div>
+
+    </main>
+
+    <script>
+        function fillPreset(type) {
+            if (type === 'catering') {
+                document.getElementById('donor_name').value = "Grand Plaza Catering";
+                document.getElementById('food_title').value = "Grilled Chicken Breast, Rice Pilaf & Roasted Veggies";
+                document.getElementById('category').value = "Prepared Meals";
+                document.getElementById('storage_type').value = "Heated Container";
+                document.getElementById('servings').value = "45";
+                document.getElementById('weight_kg').value = "18.0";
+                document.getElementById('expiry_hours').value = "2.0";
+                document.getElementById('address').value = "345 Stockton St, Downtown";
+                document.getElementById('notes').value = "Packed in commercial insulated hot boxes. Easy loading ramp.";
+            } else if (type === 'bakery') {
+                document.getElementById('donor_name').value = "Artisan Bread Factory";
+                document.getElementById('food_title').value = "Surplus Baguettes, Sourdough Loaves & Muffins";
+                document.getElementById('category').value = "Bakery";
+                document.getElementById('storage_type').value = "Ambient";
+                document.getElementById('servings').value = "30";
+                document.getElementById('weight_kg').value = "11.5";
+                document.getElementById('expiry_hours').value = "6.0";
+                document.getElementById('address').value = "780 Market St";
+                document.getElementById('notes').value = "Bagged in food-safe paper totes.";
+            } else if (type === 'produce') {
+                document.getElementById('donor_name').value = "City Market Organics";
+                document.getElementById('food_title').value = "Mixed Ripe Fruit Crates (Apples, Berries, Oranges)";
+                document.getElementById('category').value = "Produce";
+                document.getElementById('storage_type').value = "Refrigerated";
+                document.getElementById('servings').value = "60";
+                document.getElementById('weight_kg').value = "24.0";
+                document.getElementById('expiry_hours').value = "4.0";
+                document.getElementById('address').value = "325 4th St";
+                document.getElementById('notes').value = "Requires cold storage. Crates available for exchange.";
+            }
+        }
+
+        async function handleDonorSubmit(e) {
+            e.preventDefault();
+            const payload = {
+                donor_name: document.getElementById('donor_name').value,
+                food_title: document.getElementById('food_title').value,
+                category: document.getElementById('category').value,
+                storage_type: document.getElementById('storage_type').value,
+                servings: parseInt(document.getElementById('servings').value),
+                weight_kg: parseFloat(document.getElementById('weight_kg').value),
+                expiry_hours: parseFloat(document.getElementById('expiry_hours').value),
+                address: document.getElementById('address').value,
+                lat: 37.7850 + (Math.random() * 0.01 - 0.005),
+                lng: -122.4030 + (Math.random() * 0.01 - 0.005),
+                notes: document.getElementById('notes').value
+            };
+
+            try {
+                const res = await fetch('/api/donations', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                }).then(r => r.json());
+
+                if (res.success) {
+                    alert(`✅ Food Donation Posted!\n\nMatching Engine Recommendation:\n${res.recommended_match ? res.recommended_match.shelter_name + " (" + res.recommended_match.match_score + "% Match)" : "Searching nearby drivers..."}`);
+                    window.location.href = '/';
+                } else {
+                    alert("Error posting donation: " + res.error);
+                }
+            } catch (err) {
+                alert("Failed to submit donation.");
+            }
+        }
+    </script>
+</body>
+</html>
