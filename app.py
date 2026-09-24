@@ -4,11 +4,26 @@ Built with Python & Flask for AmiHacks Track A (NGO / Social Impact)
 """
 
 import math
+import os
 import time
 from datetime import datetime, timedelta
 from flask import Flask, render_template, request, jsonify
 
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
+
 app = Flask(__name__)
+
+# Google Maps API Key Configuration
+GOOGLE_MAPS_API_KEY = os.environ.get("GOOGLE_MAPS_API_KEY") or os.environ.get("MAPS_API_KEY", "")
+
+@app.context_processor
+def inject_google_maps_api_key():
+    return dict(google_maps_api_key=GOOGLE_MAPS_API_KEY)
+
 
 # ==========================================
 # IN-MEMORY DATA STORE (Simulated Database)
@@ -171,6 +186,43 @@ RESCUE_HISTORY = [
     }
 ]
 
+NGO_REQUESTS = [
+    {
+        "id": "req_501",
+        "ngo_name": "Hope Haven Community Kitchen",
+        "contact_person": "Sarah Jenkins",
+        "contact_phone": "+1 (555) 234-5678",
+        "category": "Prepared Meals",
+        "servings_needed": 60,
+        "urgency_hours": 3.0,
+        "address": "452 Mission Street, Downtown",
+        "lat": 37.7885,
+        "lng": -122.4012,
+        "notes": "Urgent request for 60 evening warm meals for homeless families.",
+        "status": "Open",
+        "created_at": (datetime.now() - timedelta(minutes=20)).isoformat(),
+        "fulfilled_by": None,
+        "food_title_fulfilled": None
+    },
+    {
+        "id": "req_502",
+        "ngo_name": "St. Vincent Rescue & Shelter",
+        "contact_person": "Marcus Vance",
+        "contact_phone": "+1 (555) 876-5432",
+        "category": "Produce",
+        "servings_needed": 100,
+        "urgency_hours": 5.0,
+        "address": "890 Howard St, South of Market",
+        "lat": 37.7812,
+        "lng": -122.4056,
+        "notes": "Fresh fruits & vegetables needed for daily shelter soup kitchen.",
+        "status": "Open",
+        "created_at": (datetime.now() - timedelta(minutes=40)).isoformat(),
+        "fulfilled_by": None,
+        "food_title_fulfilled": None
+    }
+]
+
 # ==========================================
 # HELPER MATH & MATCHING ENGINE LOGIC
 # ==========================================
@@ -251,6 +303,10 @@ def find_best_shelter_match(donation):
 def index():
     return render_template('index.html')
 
+@app.route('/login')
+def login_portal():
+    return render_template('login.html')
+
 @app.route('/donor')
 def donor_portal():
     return render_template('donor.html')
@@ -268,8 +324,99 @@ def impact_portal():
     return render_template('impact.html')
 
 # ==========================================
-# REST API ENDPOINTS FOR LEAFLET MAP & JS
+# AUTHENTICATION & USER MANAGEMENT API
 # ==========================================
+
+USERS = [
+    {
+        "id": "usr_101",
+        "email": "shelter@hopehaven.org",
+        "password": "password123",
+        "role": "shelter",
+        "name": "Hope Haven Community Kitchen",
+        "address": "452 Mission Street, Downtown",
+        "lat": 37.7885,
+        "lng": -122.4012,
+        "phone": "+1 (555) 234-5678"
+    },
+    {
+        "id": "usr_102",
+        "email": "donor@techvertex.com",
+        "password": "password123",
+        "role": "donor",
+        "name": "TechVertex Main Cafeteria",
+        "address": "500 Howard St, Suite 300",
+        "lat": 37.7892,
+        "lng": -122.3985,
+        "phone": "+1 (555) 987-6543"
+    },
+    {
+        "id": "usr_103",
+        "email": "driver@expressrescue.org",
+        "password": "password123",
+        "role": "driver",
+        "name": "David Chen",
+        "address": "800 Market St, SF",
+        "lat": 37.7850,
+        "lng": -122.4030,
+        "phone": "+1 (555) 444-1122"
+    }
+]
+
+@app.route('/api/auth/login', methods=['POST'])
+def api_auth_login():
+    data = request.json or {}
+    email = data.get("email", "").strip().lower()
+    password = data.get("password", "")
+    role = data.get("role", "donor")
+
+    user = next((u for u in USERS if u["email"].lower() == email), None)
+    if not user:
+        user = {
+            "id": f"usr_{int(time.time())}",
+            "email": email or "user@techvertex.org",
+            "password": password or "demo",
+            "role": role,
+            "name": data.get("name") or ("Food Rescue Partner" if role == "donor" else "Shelter Partner"),
+            "address": data.get("address") or "San Francisco Downtown",
+            "lat": float(data.get("lat") or 37.7870),
+            "lng": float(data.get("lng") or -122.4000),
+            "phone": data.get("phone") or "+1 (555) 000-1111"
+        }
+        USERS.append(user)
+
+    return jsonify({
+        "success": True,
+        "message": "Authentication successful!",
+        "user": user
+    })
+
+@app.route('/api/auth/register', methods=['POST'])
+def api_auth_register():
+    data = request.json or {}
+    email = data.get("email", "").strip().lower()
+    
+    if any(u["email"].lower() == email for u in USERS if email):
+        return jsonify({"success": False, "error": "An account with this email address already exists."}), 400
+
+    new_user = {
+        "id": f"usr_{int(time.time())}",
+        "email": email or f"user_{int(time.time())}@techvertex.org",
+        "password": data.get("password", "password123"),
+        "role": data.get("role", "donor"),
+        "name": data.get("name", "New Food Rescue Partner"),
+        "address": data.get("address", "San Francisco Downtown"),
+        "lat": float(data.get("lat") or 37.7870),
+        "lng": float(data.get("lng") or -122.4000),
+        "phone": data.get("phone", "+1 (555) 000-1111")
+    }
+    USERS.append(new_user)
+    
+    return jsonify({
+        "success": True,
+        "message": "Account registered successfully!",
+        "user": new_user
+    }), 201
 
 @app.route('/api/donations', methods=['GET', 'POST'])
 def api_donations():
@@ -347,6 +494,79 @@ def api_shelters():
 @app.route('/api/drivers', methods=['GET'])
 def api_drivers():
     return jsonify({"drivers": DRIVERS})
+
+@app.route('/api/ngo-requests', methods=['GET', 'POST'])
+def api_ngo_requests():
+    if request.method == 'POST':
+        data = request.json or {}
+        new_req = {
+            "id": f"req_{int(time.time())}",
+            "ngo_name": data.get("ngo_name", "Local Food Bank / Shelter"),
+            "contact_person": data.get("contact_person", "NGO Coordinator"),
+            "contact_phone": data.get("contact_phone", "+1 (555) 000-1111"),
+            "category": data.get("category", "Prepared Meals"),
+            "servings_needed": int(data.get("servings_needed", 50)),
+            "urgency_hours": float(data.get("urgency_hours", 4.0)),
+            "address": data.get("address", "City Center"),
+            "lat": float(data.get("lat", 37.7850)),
+            "lng": float(data.get("lng", -122.4030)),
+            "notes": data.get("notes", ""),
+            "status": "Open",
+            "created_at": datetime.now().isoformat(),
+            "fulfilled_by": None,
+            "food_title_fulfilled": None
+        }
+        NGO_REQUESTS.insert(0, new_req)
+        return jsonify({"success": True, "message": "NGO Food Request posted successfully!", "request": new_req}), 201
+
+    return jsonify({"requests": NGO_REQUESTS})
+
+@app.route('/api/ngo-requests/<req_id>/fulfill', methods=['POST'])
+def api_fulfill_ngo_request(req_id):
+    data = request.json or {}
+    donor_name = data.get("donor_name", "Partner Restaurant")
+    food_title = data.get("food_title", "Surplus Meals")
+    
+    for req in NGO_REQUESTS:
+        if req["id"] == req_id:
+            req["status"] = "Fulfilled"
+            req["fulfilled_by"] = donor_name
+            req["food_title_fulfilled"] = food_title
+            
+            # Find matching shelter or add donation record
+            new_donation = {
+                "id": f"don_fulfill_{int(time.time())}",
+                "donor_name": donor_name,
+                "food_title": food_title,
+                "category": req["category"],
+                "weight_kg": round(req["servings_needed"] * 0.4, 1),
+                "servings": req["servings_needed"],
+                "storage_type": "Prepared",
+                "location": {
+                    "address": req["address"],
+                    "lat": req["lat"],
+                    "lng": req["lng"]
+                },
+                "created_at": datetime.now().isoformat(),
+                "expiry_hours": 3.0,
+                "notes": f"Directly matched & fulfilled to NGO Request #{req_id}",
+                "status": "Matched",
+                "matched_shelter_id": None,
+                "matched_shelter_name": req["ngo_name"],
+                "driver_id": "driver_1",
+                "driver_name": "David Chen",
+                "photo_url": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=500&q=80"
+            }
+            DONATIONS.insert(0, new_donation)
+            
+            return jsonify({
+                "success": True,
+                "message": f"Successfully matched & sent surplus food to {req['ngo_name']}!",
+                "request": req,
+                "donation": new_donation
+            })
+
+    return jsonify({"success": False, "error": "NGO Request not found"}), 404
 
 @app.route('/api/match/<donation_id>', methods=['POST'])
 def api_trigger_match(donation_id):

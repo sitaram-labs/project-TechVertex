@@ -14,7 +14,7 @@ Over **1.3 billion tons** of food are wasted globally every year, while millions
 **Surplus-to-Shelter** is a real-time geo-spatial matching and dispatch engine designed to rescue surplus meals before they spoil. 
 
 ### Key Features
-1. 🗺️ **Live Urban Dispatch Map:** Interactive Leaflet dark-map tracking real-time locations of Donors, Shelters, and Active Delivery Volunteers.
+1. 🗺️ **Live Urban Dispatch Map:** Interactive Google Maps dark-mode tracking real-time locations of Donors, Shelters, and Active Delivery Volunteers.
 2. ⚡ **Smart Matching Algorithm:** Uses the **Haversine Distance Formula** combined with real-time urgency scoring (shelf-life, fridge availability, and current shelter capacity).
 3. 🏠 **Shelter Capacity Dashboard:** Shelters manage meal intake capacity and claim incoming donations with a single click.
 4. 🚚 **Driver Rescue Dispatch:** Volunteer drivers view active routes, claim dispatch tasks, and mark deliveries complete.
@@ -24,9 +24,9 @@ Over **1.3 billion tons** of food are wasted globally every year, while millions
 ---
 
 ## 🛠️ Tech Stack
-* **Backend:** Python 3.x, Flask, RESTful API
+* **Backend:** Python 3.x, Flask, RESTful API, python-dotenv
 * **Frontend:** HTML5, Modern CSS3 (Glassmorphism & CSS Variables), Vanilla JS (ES6+)
-* **Mapping:** Leaflet.js, CartoDB Dark Tiles
+* **Mapping:** Google Maps JavaScript API (Dark Theme, SVG Markers, InfoWindows, Route Polylines)
 
 ---
 
@@ -42,7 +42,17 @@ Over **1.3 billion tons** of food are wasted globally every year, while millions
    pip install -r requirements.txt
    ```
 
-3. **Start the Flask server:**
+3. **Configure Environment Variables:**
+   Copy `.env.example` to `.env` and set your Google Maps API Key:
+   ```bash
+   cp .env.example .env
+   ```
+   Edit `.env`:
+   ```env
+   GOOGLE_MAPS_API_KEY=your_actual_google_maps_api_key_here
+   ```
+
+4. **Start the Flask server:**
    ```bash
    python app.py
    ```

@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Login & Location Setup | Surplus-to-Shelter</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .auth-container {
+            min-height: calc(100vh - 160px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2.5rem 1rem;
+        }
+
+        .auth-card {
+            width: 100%;
+            max-width: 640px;
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid var(--border-glass);
+            backdrop-filter: blur(20px);
+            border-radius: var(--radius-lg);
+            padding: 2.25rem;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .auth-tabs {
+            display: flex;
+            gap: 0.5rem;
+            background: rgba(30, 41, 59, 0.6);
+            padding: 0.3rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 1.75rem;
+        }
+
+        .auth-tab-btn {
+            flex: 1;
+            padding: 0.65rem;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-family: var(--font-heading);
+            font-weight: 600;
+            font-size: 0.95rem;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .auth-tab-btn.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 14px var(--primary-glow);
+        }
+
+        .quick-demo-accounts {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .demo-acc-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-glass);
+            padding: 0.65rem 0.5rem;
+            border-radius: var(--radius-sm);
+            color: var(--text-main);
+            font-size: 0.82rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .demo-acc-btn:hover {
+            border-color: var(--primary);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .picker-map-box {
+            width: 100%;
+            height: 180px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-glass);
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Header -->
+    <nav class="navbar">
+        <a href="/" class="brand-logo">
+            <div class="brand-icon">🌱</div>
+            <span>Surplus<span style="color:var(--primary)">To</span>Shelter</span>
+        </a>
+
+        <ul class="nav-links">
+            <li class="nav-item"><a href="/">📊 Overview</a></li>
+            <li class="nav-item"><a href="/donor">🍲 Donor Intake</a></li>
+            <li class="nav-item"><a href="/shelter">🏠 Shelter Capacity</a></li>
+            <li class="nav-item"><a href="/driver">🚚 Driver Dispatch</a></li>
+            <li class="nav-item"><a href="/impact">📈 ESG Impact</a></li>
+        </ul>
+
+        <div class="nav-actions">
+            <a href="/" class="btn btn-secondary">&larr; Back to Dashboard</a>
+        </div>
+    </nav>
+
+    <!-- Main Auth Portal Container -->
+    <main class="auth-container">
+        <div class="auth-card">
+
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+                <div style="font-size: 2.2rem; margin-bottom: 0.25rem;">🔑</div>
+                <h2 style="font-family:var(--font-heading); font-size:1.6rem; font-weight:700; color:white;">
+                    Surplus-to-Shelter Authentication Portal
+                </h2>
+                <p style="font-size:0.86rem; color:var(--text-muted); margin-top:0.25rem;">
+                    Sign in or register your Food Business or NGO to access real-time geo-matching.
+                </p>
+            </div>
+
+            <!-- Quick One-Click Demo Logins -->
+            <div style="margin-bottom: 1.5rem;">
+                <label style="font-size:0.78rem; color:var(--text-muted); display:block; margin-bottom:0.5rem; text-align:center;">
+                    ⚡ One-Click Instant Demo Login:
+                </label>
+                <div class="quick-demo-accounts">
+                    <button type="button" onclick="quickLogin('donor@techvertex.com', 'donor')" class="demo-acc-btn">
+                        🍲 <b>TechVertex Cafe</b><br><span style="font-size:0.73rem; opacity:0.7;">Restaurant Donor</span>
+                    </button>
+                    <button type="button" onclick="quickLogin('shelter@hopehaven.org', 'shelter')" class="demo-acc-btn">
+                        🏠 <b>Hope Haven NGO</b><br><span style="font-size:0.73rem; opacity:0.7;">Community Shelter</span>
+                    </button>
+                    <button type="button" onclick="quickLogin('driver@expressrescue.org', 'driver')" class="demo-acc-btn">
+                        🚚 <b>David Chen</b><br><span style="font-size:0.73rem; opacity:0.7;">Volunteer Driver</span>
+                    </button>
+                </div>
+            </div>
+
+            <div style="display:flex; align-items:center; gap:1rem; margin-bottom:1.5rem;">
+                <div style="flex:1; height:1px; background:rgba(255,255,255,0.08);"></div>
+                <span style="font-size:0.78rem; color:var(--text-dim);">OR SIGN IN WITH EMAIL</span>
+                <div style="flex:1; height:1px; background:rgba(255,255,255,0.08);"></div>
+            </div>
+
+            <!-- Auth Form Tab Switcher -->
+            <div class="auth-tabs">
+                <button class="auth-tab-btn active" id="tab-login" onclick="switchAuthTab('login')">Sign In</button>
+                <button class="auth-tab-btn" id="tab-register" onclick="switchAuthTab('register')">Register New Account</button>
+            </div>
+
+            <!-- Form 1: Sign In -->
+            <form id="form-login" onsubmit="handleAuthLogin(event)" style="display:flex; flex-direction:column; gap:1rem;">
+                <div>
+                    <label style="font-size:0.83rem; color:var(--text-muted);">Email Address:</label>
+                    <input type="email" id="login-email" placeholder="e.g. donor@techvertex.com or shelter@hopehaven.org" required style="width:100%; padding:0.7rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px; margin-top:0.3rem;">
+                </div>
+                <div>
+                    <label style="font-size:0.83rem; color:var(--text-muted);">Password:</label>
+                    <input type="password" id="login-password" value="password123" required style="width:100%; padding:0.7rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px; margin-top:0.3rem;">
+                </div>
+                <div>
+                    <label style="font-size:0.83rem; color:var(--text-muted);">Account Role:</label>
+                    <select id="login-role" style="width:100%; padding:0.7rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px; margin-top:0.3rem;">
+                        <option value="donor">🍲 Food Donor / Restaurant</option>
+                        <option value="shelter">🏠 NGO / Shelter</option>
+                        <option value="driver">🚚 Volunteer Driver</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%; padding:0.75rem; font-size:0.95rem; margin-top:0.5rem;">
+                    Sign In & Launch Map Workspace &rarr;
+                </button>
+            </form>
+
+            <!-- Form 2: Register New Account & Location Setup -->
+            <form id="form-register" onsubmit="handleAuthRegister(event)" style="display:none; flex-direction:column; gap:1rem;">
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.75rem;">
+                    <div>
+                        <label style="font-size:0.83rem; color:var(--text-muted);">Email Address *</label>
+                        <input type="email" id="reg-email" placeholder="name@organization.org" required style="width:100%; padding:0.65rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px; margin-top:0.25rem;">
+                    </div>
+                    <div>
+                        <label style="font-size:0.83rem; color:var(--text-muted);">Password *</label>
+                        <input type="password" id="reg-password" placeholder="Create password" required style="width:100%; padding:0.65rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px; margin-top:0.25rem;">
+                    </div>
+                </div>
+
+                <div>
+                    <label style="font-size:0.83rem; color:var(--text-muted);">Select Account Role *</label>
+                    <div class="role-card-grid" style="margin-top:0.3rem; margin-bottom:0.5rem;">
+                        <div class="role-option-card selected" id="reg-role-card-donor" onclick="selectRegRole('donor')">
+                            <div class="role-icon" style="font-size:1.6rem;">🍲</div>
+                            <h4 style="font-size:0.88rem;">Restaurant / Donor</h4>
+                        </div>
+                        <div class="role-option-card" id="reg-role-card-shelter" onclick="selectRegRole('shelter')">
+                            <div class="role-icon" style="font-size:1.6rem;">🏠</div>
+                            <h4 style="font-size:0.88rem;">NGO / Shelter</h4>
+                        </div>
+                        <div class="role-option-card" id="reg-role-card-driver" onclick="selectRegRole('driver')">
+                            <div class="role-icon" style="font-size:1.6rem;">🚚</div>
+                            <h4 style="font-size:0.88rem;">Volunteer Driver</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label style="font-size:0.83rem; color:var(--text-muted);">Organization / Business Name *</label>
+                    <input type="text" id="reg-name" placeholder="e.g. Hope Haven Shelter or Gourmet Kitchen" required style="width:100%; padding:0.65rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px; margin-top:0.25rem;">
+                </div>
+
+                <div>
+                    <label style="font-size:0.83rem; color:var(--text-muted);">Street Address & Location Pin *</label>
+                    <input type="text" id="reg-address" placeholder="e.g. 452 Mission Street, Downtown" required style="width:100%; padding:0.65rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px; margin-top:0.25rem;">
+                </div>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.75rem;">
+                    <div>
+                        <label style="font-size:0.8rem; color:var(--text-muted);">Latitude Coordinate:</label>
+                        <input type="number" step="0.0001" id="reg-lat" value="37.7885" required style="width:100%; padding:0.55rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px;">
+                    </div>
+                    <div>
+                        <label style="font-size:0.8rem; color:var(--text-muted);">Longitude Coordinate:</label>
+                        <input type="number" step="0.0001" id="reg-lng" value="-122.4012" required style="width:100%; padding:0.55rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px;">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width:100%; padding:0.75rem; font-size:0.95rem; margin-top:0.5rem;">
+                    Create Account & Enter Dashboard &rarr;
+                </button>
+            </form>
+
+        </div>
+    </main>
+
+    <!-- App Footer Component -->
+    <footer class="app-footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <a href="/" class="brand-logo" style="display:inline-flex;">
+                    <div class="brand-icon">🌱</div>
+                    <span>Surplus<span style="color:var(--primary)">To</span>Shelter</span>
+                </a>
+                <p class="footer-tagline">
+                    Real-time geo-spatial routing engine connecting corporate dining, restaurants, and caterers with local shelters & NGOs to eliminate urban food waste.
+                </p>
+            </div>
+            <div class="footer-bottom" style="grid-column: 1 / -1;">
+                <p>&copy; 2026 Surplus-to-Shelter Engine • Built by Sitaram & TechVertex Team</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+        let regRole = 'donor';
+
+        function switchAuthTab(tab) {
+            const formLogin = document.getElementById('form-login');
+            const formRegister = document.getElementById('form-register');
+            const tabLogin = document.getElementById('tab-login');
+            const tabRegister = document.getElementById('tab-register');
+
+            if (tab === 'login') {
+                formLogin.style.display = 'flex';
+                formRegister.style.display = 'none';
+                tabLogin.classList.add('active');
+                tabRegister.classList.remove('active');
+            } else {
+                formLogin.style.display = 'none';
+                formRegister.style.display = 'flex';
+                tabRegister.classList.add('active');
+                tabLogin.classList.remove('active');
+            }
+        }
+
+        function selectRegRole(role) {
+            regRole = role;
+            document.querySelectorAll('#form-register .role-option-card').forEach(card => card.classList.remove('selected'));
+            const target = document.getElementById(`reg-role-card-${role}`);
+            if (target) target.classList.add('selected');
+        }
+
+        async function quickLogin(email, role) {
+            document.getElementById('login-email').value = email;
+            document.getElementById('login-role').value = role;
+            await handleAuthLogin(new Event('submit'));
+        }
+
+        async function handleAuthLogin(event) {
+            if (event && event.preventDefault) event.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const role = document.getElementById('login-role').value;
+
+            try {
+                const res = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password, role })
+                }).then(r => r.json());
+
+                if (res.success && res.user) {
+                    saveUserProfile(res.user);
+                    showToast('🎉 Login Successful!', `Welcome back, ${escapeHtml(res.user.name)}! Redirecting to map workspace...`, 'emerald');
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 800);
+                }
+            } catch (err) {
+                showToast('⚠️ Error', 'Login failed. Please check credentials.', 'rose');
+            }
+        }
+
+        async function handleAuthRegister(event) {
+            event.preventDefault();
+            const email = document.getElementById('reg-email').value;
+            const password = document.getElementById('reg-password').value;
+            const name = document.getElementById('reg-name').value;
+            const address = document.getElementById('reg-address').value;
+            const lat = parseFloat(document.getElementById('reg-lat').value);
+            const lng = parseFloat(document.getElementById('reg-lng').value);
+
+            try {
+                const res = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password, role: regRole, name, address, lat, lng })
+                }).then(r => r.json());
+
+                if (res.success && res.user) {
+                    saveUserProfile(res.user);
+                    showToast('🎉 Account Registered!', `Welcome to Surplus-to-Shelter, ${escapeHtml(res.user.name)}! Redirecting to map workspace...`, 'purple');
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 800);
+                } else {
+                    showToast('⚠️ Registration Error', res.error || 'Registration failed.', 'rose');
+                }
+            } catch (err) {
+                showToast('⚠️ Error', 'Failed to register account.', 'rose');
+            }
+        }
+    </script>
+</body>
+</html>

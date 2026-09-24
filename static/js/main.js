@@ -1,61 +1,205 @@
 /* 
-  Surplus-to-Shelter: Real-Time Food Rescue Routing
-  Interactive Leaflet Map & Frontend API Logic
+  Surplus-to-Shelter: Real-Time Food Rescue Routing Engine
+  Interactive Google Maps JS API, NGO Requests & Auth Engine
 */
 
 let map = null;
 let donorMarkers = {};
 let shelterMarkers = {};
-let driverMarkers = {};
+let ngoRequestMarkers = {};
 let activePolyLines = [];
+let activeInfoWindow = null;
+let isMapInitialized = false;
+
+let currentFeedTab = 'donations'; // 'donations' or 'ngo-requests'
+let selectedRole = 'donor';
 
 document.addEventListener('DOMContentLoaded', () => {
-    initMap();
+    initUserProfileNav();
+    
+    if (typeof google !== 'undefined' && typeof google.maps !== 'undefined') {
+        initMap();
+    }
     loadDashboardData();
     
     const params = new URLSearchParams(window.location.search);
     if (params.get('open') === 'team-modal') {
         openModal('team-modal');
+    } else if (params.get('open') === 'onboarding-modal') {
+        openModal('onboarding-modal');
     }
     
     // Auto refresh every 6 seconds
     setInterval(loadDashboardData, 6000);
 });
 
-// Initialize Leaflet Map
-function initMap() {
+// User Profile & Saved Session Management
+function getUserProfile() {
+    try {
+        const saved = localStorage.getItem('sts_user_profile');
+        if (saved) return JSON.parse(saved);
+    } catch (e) {}
+    return {
+        role: 'donor',
+        name: 'TechVertex Main Cafeteria',
+        email: 'donor@techvertex.com',
+        address: '500 Howard St, Suite 300',
+        lat: 37.7892,
+        lng: -122.3985
+    };
+}
+
+function saveUserProfile(profile) {
+    try {
+        localStorage.setItem('sts_user_profile', JSON.stringify(profile));
+    } catch (e) {}
+    initUserProfileNav();
+}
+
+function initUserProfileNav() {
+    const profile = getUserProfile();
+    const navBadge = document.getElementById('nav-user-badge');
+    if (navBadge) {
+        let roleBadgeEmoji = '🍲';
+        if (profile.role === 'shelter') roleBadgeEmoji = '🏠';
+        if (profile.role === 'driver') roleBadgeEmoji = '🚚';
+
+        navBadge.innerHTML = `
+            <span>${roleBadgeEmoji} <b>${escapeHtml(profile.name)}</b></span>
+            <span style="opacity:0.6; font-size:0.75rem;">(${profile.role.toUpperCase()})</span>
+        `;
+    }
+}
+
+// Google Maps Auth Failure Handler
+window.gm_authFailure = function() {
+    const mapElement = document.getElementById('map');
+    if (mapElement) {
+        showMapErrorState(mapElement, "Invalid API Key or Billing Disabled");
+    }
+};
+
+// Helper SVG Marker Icon Generator for Google Maps
+function getSvgMarkerIcon(bgColor, emojiText) {
+    const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36">
+        <circle cx="18" cy="18" r="15" fill="${bgColor}" stroke="#ffffff" stroke-width="2"/>
+        <text x="18" y="23" font-size="16" text-anchor="middle" dominant-baseline="middle" fill="#ffffff">${emojiText}</text>
+    </svg>`;
+    return {
+        url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg),
+        scaledSize: new google.maps.Size(36, 36),
+        anchor: new google.maps.Point(18, 18)
+    };
+}
+
+// Initialize Google Map
+window.initMap = function initMap() {
     const mapElement = document.getElementById('map');
     if (!mapElement) return;
+    if (isMapInitialized && map) return;
 
-    // Center on urban area (San Francisco downtown cluster)
-    map = L.map('map', {
-        zoomControl: true,
-        attributionControl: false
-    }).setView([37.7850, -122.4030], 14);
+    if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
+        console.warn('Google Maps API script not loaded or API key missing.');
+        showMapErrorState(mapElement);
+        return;
+    }
 
-    // Dark Tile Layer (CartoDB Dark Matter)
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-        maxZoom: 19,
-        subdomains: 'abcd'
-    }).addTo(map);
+    const darkMapStyle = [
+        { "elementType": "geometry", "stylers": [{ "color": "#181f2a" }] },
+        { "elementType": "labels.text.fill", "stylers": [{ "color": "#94a3b8" }] },
+        { "elementType": "labels.text.stroke", "stylers": [{ "color": "#0f172a" }] },
+        { "featureType": "administrative.locality", "elementType": "labels.text.fill", "stylers": [{ "color": "#cbd5e1" }] },
+        { "featureType": "poi", "elementType": "labels.text.fill", "stylers": [{ "color": "#10b981" }] },
+        { "featureType": "poi.park", "elementType": "geometry", "stylers": [{ "color": "#112229" }] },
+        { "featureType": "poi.park", "elementType": "labels.text.fill", "stylers": [{ "color": "#64748b" }] },
+        { "featureType": "road", "elementType": "geometry", "stylers": [{ "color": "#1e293b" }] },
+        { "featureType": "road", "elementType": "geometry.stroke", "stylers": [{ "color": "#0f172a" }] },
+        { "featureType": "road", "elementType": "labels.text.fill", "stylers": [{ "color": "#94a3b8" }] },
+        { "featureType": "road.highway", "elementType": "geometry", "stylers": [{ "color": "#334155" }] },
+        { "featureType": "transit", "elementType": "geometry", "stylers": [{ "color": "#1e293b" }] },
+        { "featureType": "water", "elementType": "geometry", "stylers": [{ "color": "#0b131e" }] },
+        { "featureType": "water", "elementType": "labels.text.fill", "stylers": [{ "color": "#475569" }] }
+    ];
+
+    try {
+        map = new google.maps.Map(mapElement, {
+            center: { lat: 37.7850, lng: -122.4030 },
+            zoom: 14,
+            styles: darkMapStyle,
+            disableDefaultUI: false,
+            zoomControl: true,
+            mapTypeControl: false,
+            streetViewControl: false,
+            fullscreenControl: true
+        });
+        isMapInitialized = true;
+        loadDashboardData();
+    } catch (e) {
+        console.error("Failed to initialize Google Maps:", e);
+        showMapErrorState(mapElement);
+    }
+};
+
+function showMapErrorState(mapElement, message = "Configure GOOGLE_MAPS_API_KEY in your .env file") {
+    mapElement.innerHTML = `
+        <div style="display:flex; height:100%; min-height:350px; align-items:center; justify-content:center; flex-direction:column; background:#0f172a; color:#94a3b8; text-align:center; padding:1.5rem; border-radius:12px;">
+            <span style="font-size:2.5rem; margin-bottom:0.5rem;">🗺️</span>
+            <strong style="color:white; font-size:1.15rem; margin-bottom:0.5rem;">Google Maps Integration Active</strong>
+            <p style="font-size:0.88rem; max-width:360px; line-height:1.5; color:#cbd5e1; margin-bottom:1rem;">
+                ${escapeHtml(message)}
+            </p>
+            <span style="font-size:0.75rem; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); padding:0.4rem 0.8rem; border-radius:6px; color:#10b981;">
+                Key variable: <code>GOOGLE_MAPS_API_KEY</code>
+            </span>
+        </div>`;
 }
 
 // Main Data Fetcher
 async function loadDashboardData() {
     try {
-        const [donationsRes, sheltersRes, driversRes, analyticsRes] = await Promise.all([
+        const [donationsRes, sheltersRes, driversRes, ngoReqsRes, analyticsRes] = await Promise.all([
             fetch('/api/donations').then(r => r.json()),
             fetch('/api/shelters').then(r => r.json()),
             fetch('/api/drivers').then(r => r.json()),
+            fetch('/api/ngo-requests').then(r => r.json()),
             fetch('/api/analytics').then(r => r.json())
         ]);
 
         updateAnalyticsUI(analyticsRes);
-        renderDonationsFeed(donationsRes.donations || []);
-        renderMapMarkers(donationsRes.donations || [], sheltersRes.shelters || [], driversRes.drivers || []);
+
+        if (currentFeedTab === 'donations') {
+            renderDonationsFeed(donationsRes.donations || []);
+        } else {
+            renderNgoRequestsFeed(ngoReqsRes.requests || []);
+        }
+
+        renderMapMarkers(
+            donationsRes.donations || [],
+            sheltersRes.shelters || [],
+            driversRes.drivers || [],
+            ngoReqsRes.requests || []
+        );
     } catch (err) {
         console.error('Error fetching dashboard data:', err);
     }
+}
+
+// Switch Feed View Tab (Surplus Food vs NGO Requests)
+function switchFeedTab(tabName) {
+    currentFeedTab = tabName;
+    const btnDonations = document.getElementById('tab-btn-donations');
+    const btnNgo = document.getElementById('tab-btn-ngo');
+
+    if (tabName === 'donations') {
+        if (btnDonations) btnDonations.classList.add('active');
+        if (btnNgo) btnNgo.classList.remove('active');
+    } else {
+        if (btnNgo) btnNgo.classList.add('active');
+        if (btnDonations) btnDonations.classList.remove('active');
+    }
+
+    loadDashboardData();
 }
 
 // Update Top Metric Cards
@@ -114,6 +258,48 @@ function renderDonationsFeed(donations) {
     feedContainer.innerHTML = html;
 }
 
+// Render Live NGO Requests Feed
+function renderNgoRequestsFeed(requests) {
+    const feedContainer = document.getElementById('donations-feed');
+    if (!feedContainer) return;
+
+    if (requests.length === 0) {
+        feedContainer.innerHTML = '<p style="color:var(--text-muted); text-align:center; padding:2rem;">No open NGO food requests right now.</p>';
+        return;
+    }
+
+    let html = '';
+    requests.forEach(r => {
+        const isOpen = r.status === 'Open';
+        
+        html += `
+        <div class="ngo-req-card">
+            <div class="ngo-req-header">
+                <span class="ngo-req-title">📋 ${escapeHtml(r.ngo_name)}</span>
+                <span class="badge-status ${r.status}">${r.status}</span>
+            </div>
+            <div style="font-size:0.9rem; color:var(--primary); font-weight:600; margin-bottom:0.4rem;">
+                Needs: ${r.servings_needed} servings of ${escapeHtml(r.category)}
+            </div>
+            <div class="ngo-req-meta">
+                <span>📍 ${escapeHtml(r.address)}</span>
+                <span>⏱️ Urgency: Within ${r.urgency_hours} hrs</span>
+                <span>📞 ${escapeHtml(r.contact_person)}</span>
+            </div>
+            <p style="font-size:0.83rem; color:var(--text-muted); margin-bottom:0.75rem; background:rgba(0,0,0,0.2); padding:0.4rem 0.6rem; border-radius:6px;">
+                "${escapeHtml(r.notes || 'Direct food request for community shelter guests.')}"
+            </p>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-size:0.78rem; color:var(--text-dim);">Posted recently</span>
+                ${isOpen ? `<button onclick="openFulfillNgoModal('${r.id}', '${escapeHtml(r.ngo_name)}', '${escapeHtml(r.category)}', ${r.servings_needed})" class="btn btn-primary btn-pulse" style="padding:0.35rem 0.75rem; font-size:0.82rem;">🍲 Fulfill with Surplus</button>` : `<span style="font-size:0.8rem; color:var(--primary);">✓ Fulfilled by ${escapeHtml(r.fulfilled_by || 'Restaurant')}</span>`}
+            </div>
+        </div>
+        `;
+    });
+
+    feedContainer.innerHTML = html;
+}
+
 function getActionButtonHTML(donation) {
     if (donation.status === 'Posted') {
         return `<button onclick="openMatchModal('${donation.id}')" class="btn btn-primary btn-pulse" style="padding:0.35rem 0.75rem; font-size:0.82rem;">⚡ Find Match</button>`;
@@ -126,32 +312,87 @@ function getActionButtonHTML(donation) {
     }
 }
 
-// Render Interactive Leaflet Map Markers & Route Vectors
-function renderMapMarkers(donations, shelters, drivers) {
-    if (!map) return;
+// Render Interactive Google Maps Markers & Route Vectors
+function renderMapMarkers(donations, shelters, drivers, ngoRequests = []) {
+    if (!map || typeof google === 'undefined' || typeof google.maps === 'undefined') return;
 
     // Clear existing polylines
-    activePolyLines.forEach(line => map.removeLayer(line));
+    activePolyLines.forEach(line => line.setMap(null));
     activePolyLines = [];
+
+    const userProfile = getUserProfile();
 
     // Render Shelters (Purple House Icon)
     shelters.forEach(s => {
         if (!shelterMarkers[s.id]) {
-            const icon = L.divIcon({
-                className: 'custom-map-icon shelter-icon',
-                html: `<div style="background:#8b5cf6; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-size:16px; border:2px solid white; box-shadow:0 0 10px rgba(139,92,246,0.6);">🏠</div>`,
-                iconSize: [32, 32]
+            const icon = getSvgMarkerIcon('#8b5cf6', '🏠');
+
+            const marker = new google.maps.Marker({
+                position: { lat: s.lat, lng: s.lng },
+                map: map,
+                icon: icon,
+                title: s.name
             });
 
-            const marker = L.marker([s.lat, s.lng], { icon: icon }).addTo(map);
-            marker.bindPopup(`
-                <div style="font-family:sans-serif; color:#0f172a;">
+            const contentString = `
+                <div style="font-family:sans-serif; color:#0f172a; padding:4px;">
                     <strong style="color:#8b5cf6; font-size:14px;">${escapeHtml(s.name)}</strong><br>
                     <span>Capacity: ${s.current_occupancy}/${s.capacity_servings} meals</span><br>
                     <span>Fridge Available: ${s.fridge_available ? 'Yes ✅' : 'No ❌'}</span>
                 </div>
-            `);
-            shelterMarkers[s.id] = marker;
+            `;
+            const infoWindow = new google.maps.InfoWindow({ content: contentString });
+
+            marker.addListener('click', () => {
+                if (activeInfoWindow) activeInfoWindow.close();
+                infoWindow.open(map, marker);
+                activeInfoWindow = infoWindow;
+            });
+
+            shelterMarkers[s.id] = { marker, infoWindow };
+        }
+    });
+
+    // Render NGO Live Food Requests Pins (Glowing Blue Document Pins)
+    ngoRequests.forEach(req => {
+        if (!ngoRequestMarkers[req.id]) {
+            const bg = req.status === 'Open' ? '#3b82f6' : '#64748b';
+            const icon = getSvgMarkerIcon(bg, '📋');
+
+            const marker = new google.maps.Marker({
+                position: { lat: req.lat, lng: req.lng },
+                map: map,
+                icon: icon,
+                title: req.ngo_name
+            });
+
+            const contentString = `
+                <div style="font-family:sans-serif; color:#0f172a; padding:6px; max-width:240px;">
+                    <strong style="color:#3b82f6; font-size:14px; display:block; margin-bottom:4px;">📋 ${escapeHtml(req.ngo_name)}</strong>
+                    <span style="font-size:12px; color:#475569;">📍 ${escapeHtml(req.address)}</span><br>
+                    <div style="background:#eff6ff; border:1px solid #bfdbfe; color:#1d4ed8; font-weight:600; font-size:12px; padding:4px 8px; border-radius:4px; margin:6px 0;">
+                        Needs: ${req.servings_needed} servings of ${escapeHtml(req.category)}
+                    </div>
+                    <span style="font-size:11px; color:#64748b;">Urgency: Within ${req.urgency_hours} hrs</span><br>
+                    ${req.status === 'Open' ? `
+                        <button onclick="openFulfillNgoModal('${req.id}', '${escapeHtml(req.ngo_name)}', '${escapeHtml(req.category)}', ${req.servings_needed})" 
+                                style="margin-top:8px; width:100%; background:#10b981; color:white; border:none; padding:6px 12px; border-radius:6px; font-weight:600; cursor:pointer; font-size:12px;">
+                            🍲 Fulfill Request with Surplus Food
+                        </button>` : `
+                        <div style="margin-top:6px; color:#10b981; font-weight:600; font-size:12px;">
+                            ✓ Fulfilled by ${escapeHtml(req.fulfilled_by || 'Restaurant')}
+                        </div>`}
+                </div>
+            `;
+            const infoWindow = new google.maps.InfoWindow({ content: contentString });
+
+            marker.addListener('click', () => {
+                if (activeInfoWindow) activeInfoWindow.close();
+                infoWindow.open(map, marker);
+                activeInfoWindow = infoWindow;
+            });
+
+            ngoRequestMarkers[req.id] = { marker, infoWindow };
         }
     });
 
@@ -163,42 +404,176 @@ function renderMapMarkers(donations, shelters, drivers) {
         if (!donorMarkers[d.id]) {
             const isUrgent = d.urgency_score >= 75;
             const bg = isUrgent ? '#f43f5e' : '#10b981';
-            
-            const icon = L.divIcon({
-                className: 'custom-map-icon donor-icon',
-                html: `<div style="background:${bg}; width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-size:18px; border:2px solid white; box-shadow:0 0 12px ${bg};">🍲</div>`,
-                iconSize: [34, 34]
+            const icon = getSvgMarkerIcon(bg, '🍲');
+
+            const marker = new google.maps.Marker({
+                position: { lat: dLat, lng: dLng },
+                map: map,
+                icon: icon,
+                title: d.donor_name
             });
 
-            const marker = L.marker([dLat, dLng], { icon: icon }).addTo(map);
-            marker.bindPopup(`
-                <div style="font-family:sans-serif; color:#0f172a;">
+            const contentString = `
+                <div style="font-family:sans-serif; color:#0f172a; padding:4px;">
                     <strong style="color:#10b981; font-size:14px;">${escapeHtml(d.donor_name)}</strong><br>
                     <b>Item:</b> ${escapeHtml(d.food_title)}<br>
                     <b>Qty:</b> ${d.servings} servings (${d.weight_kg} kg)<br>
                     <b>Status:</b> ${d.status}
                 </div>
-            `);
-            donorMarkers[d.id] = marker;
+            `;
+            const infoWindow = new google.maps.InfoWindow({ content: contentString });
+
+            marker.addListener('click', () => {
+                if (activeInfoWindow) activeInfoWindow.close();
+                infoWindow.open(map, marker);
+                activeInfoWindow = infoWindow;
+            });
+
+            donorMarkers[d.id] = { marker, infoWindow };
         }
 
-        // Draw connecting dashed route vector if matched
+        // Draw connecting route vector if matched
         if (d.matched_shelter_id && (d.status === 'Matched' || d.status === 'In Transit')) {
             const targetShelter = shelters.find(s => s.id === d.matched_shelter_id);
             if (targetShelter) {
-                const line = L.polyline([
-                    [dLat, dLng],
-                    [targetShelter.lat, targetShelter.lng]
-                ], {
-                    color: '#f59e0b',
-                    weight: 3,
-                    opacity: 0.85,
-                    dashArray: '8, 8'
-                }).addTo(map);
+                const line = new google.maps.Polyline({
+                    path: [
+                        { lat: dLat, lng: dLng },
+                        { lat: targetShelter.lat, lng: targetShelter.lng }
+                    ],
+                    geodesic: true,
+                    strokeColor: '#f59e0b',
+                    strokeOpacity: 0.85,
+                    strokeWeight: 3,
+                    map: map
+                });
                 activePolyLines.push(line);
             }
         }
     });
+}
+
+// Fulfill NGO Request Modal Launcher
+function openFulfillNgoModal(reqId, ngoName, category, servings) {
+    const profile = getUserProfile();
+    const modal = document.getElementById('fulfill-ngo-modal');
+    if (!modal) return;
+
+    document.getElementById('fulfill-req-id').value = reqId;
+    document.getElementById('fulfill-target-title').textContent = `Send Food to ${ngoName}`;
+    document.getElementById('fulfill-target-meta').textContent = `Target request: ${servings} servings of ${category}`;
+    document.getElementById('fulfill-donor-name').value = profile.name || 'TechVertex Kitchen';
+    
+    modal.classList.add('active');
+}
+
+async function handleFulfillSubmit(event) {
+    event.preventDefault();
+    const reqId = document.getElementById('fulfill-req-id').value;
+    const donorName = document.getElementById('fulfill-donor-name').value;
+    const foodTitle = document.getElementById('fulfill-food-title').value;
+
+    try {
+        const res = await fetch(`/api/ngo-requests/${reqId}/fulfill`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ donor_name: donorName, food_title: foodTitle })
+        }).then(r => r.json());
+
+        if (res.success) {
+            closeModal('fulfill-ngo-modal');
+            await loadDashboardData();
+            showToast('🎉 NGO Request Fulfilled!', res.message || 'Surplus food matched & driver dispatched.', 'emerald');
+        } else {
+            showToast('⚠️ Error', res.error || 'Could not fulfill request', 'rose');
+        }
+    } catch (err) {
+        showToast('⚠️ Error', 'Failed to send food fulfillment.', 'rose');
+    }
+}
+
+// NGO Post Food Request Form Handler
+async function handleNgoPostSubmit(event) {
+    event.preventDefault();
+    const profile = getUserProfile();
+
+    const data = {
+        ngo_name: document.getElementById('ngo-req-name').value || profile.name,
+        contact_person: document.getElementById('ngo-req-person').value || 'NGO Coordinator',
+        contact_phone: document.getElementById('ngo-req-phone').value || '+1 (555) 234-5678',
+        category: document.getElementById('ngo-req-category').value,
+        servings_needed: parseInt(document.getElementById('ngo-req-servings').value || 50),
+        urgency_hours: parseFloat(document.getElementById('ngo-req-hours').value || 3.0),
+        address: document.getElementById('ngo-req-address').value || profile.address,
+        lat: parseFloat(document.getElementById('ngo-req-lat').value || profile.lat),
+        lng: parseFloat(document.getElementById('ngo-req-lng').value || profile.lng),
+        notes: document.getElementById('ngo-req-notes').value
+    };
+
+    try {
+        const res = await fetch('/api/ngo-requests', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        }).then(r => r.json());
+
+        if (res.success) {
+            closeModal('ngo-request-modal');
+            switchFeedTab('ngo-requests');
+            await loadDashboardData();
+            
+            // Pan map to new NGO request location
+            if (map && res.request) {
+                map.panTo({ lat: res.request.lat, lng: res.request.lng });
+                map.setZoom(15);
+            }
+            
+            showToast('📋 NGO Food Request Published!', 'Your request pin is now visible on Google Maps for nearby restaurants to fulfill.', 'purple');
+        }
+    } catch (err) {
+        showToast('⚠️ Error', 'Failed to post NGO food request.', 'rose');
+    }
+}
+
+// Step-Wise Onboarding Wizard Logic
+function selectWizardRole(role) {
+    selectedRole = role;
+    document.querySelectorAll('.role-option-card').forEach(card => card.classList.remove('selected'));
+    const targetCard = document.getElementById(`role-card-${role}`);
+    if (targetCard) targetCard.classList.add('selected');
+}
+
+function nextWizardStep(currentStep) {
+    if (currentStep === 1) {
+        document.getElementById('wizard-step-1').style.display = 'none';
+        document.getElementById('wizard-step-2').style.display = 'block';
+        document.getElementById('step-ind-1').classList.remove('active');
+        document.getElementById('step-ind-2').classList.add('active');
+    }
+}
+
+function prevWizardStep(currentStep) {
+    if (currentStep === 2) {
+        document.getElementById('wizard-step-2').style.display = 'none';
+        document.getElementById('wizard-step-1').style.display = 'block';
+        document.getElementById('step-ind-2').classList.remove('active');
+        document.getElementById('step-ind-1').classList.add('active');
+    }
+}
+
+function completeWizard(event) {
+    event.preventDefault();
+    const profile = {
+        role: selectedRole,
+        name: document.getElementById('wiz-name').value || 'Surplus Partner',
+        address: document.getElementById('wiz-address').value || 'San Francisco Center',
+        lat: parseFloat(document.getElementById('wiz-lat').value || 37.7850),
+        lng: parseFloat(document.getElementById('wiz-lng').value || -122.4030)
+    };
+
+    saveUserProfile(profile);
+    closeModal('onboarding-modal');
+    showToast('👋 Welcome to Surplus-to-Shelter!', `Logged in as <b>${escapeHtml(profile.name)}</b> (${profile.role.toUpperCase()})`, 'emerald');
 }
 
 // Open Smart Match Modal
@@ -266,7 +641,6 @@ function handleContactSubmit(event) {
     showToast('📩 Message Sent to Sitaram & Team!', 'Thank you! Sitaram and the TechVertex team will review your NGO/Donor inquiry shortly.', 'emerald');
 }
 
-
 // Confirm Match Execution
 async function confirmMatch(donationId, shelterId) {
     try {
@@ -297,14 +671,17 @@ async function triggerSimulationStream() {
             
             // Pan map to new location smoothly
             if (map && res.donation.location) {
-                map.flyTo([res.donation.location.lat, res.donation.location.lng], 15, {
-                    animate: true,
-                    duration: 1.2
-                });
+                map.panTo({ lat: res.donation.location.lat, lng: res.donation.location.lng });
+                map.setZoom(15);
                 
                 // Open marker popup if available
-                if (donorMarkers[res.donation.id]) {
-                    setTimeout(() => donorMarkers[res.donation.id].openPopup(), 1300);
+                const item = donorMarkers[res.donation.id];
+                if (item && item.infoWindow && item.marker) {
+                    setTimeout(() => {
+                        if (activeInfoWindow) activeInfoWindow.close();
+                        item.infoWindow.open(map, item.marker);
+                        activeInfoWindow = item.infoWindow;
+                    }, 1300);
                 }
             }
 
@@ -353,4 +730,3 @@ function escapeHtml(str) {
     if (!str) return '';
     return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
-
