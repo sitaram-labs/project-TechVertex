@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ESG & Tax Impact Analytics | Surplus-to-Shelter</title>
+    <title>Impact Audit Report | Surplus-to-Shelter</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
@@ -11,32 +11,31 @@
     <nav class="navbar">
         <a href="/" class="brand-logo">
             <div class="brand-icon">🌱</div>
-            <span>Surplus<span style="color:var(--primary)">To</span>Shelter</span>
+            <span>SurplusToShelter</span>
         </a>
         <ul class="nav-links">
             <li class="nav-item"><a href="/">📊 Overview</a></li>
             <li class="nav-item"><a href="/donor">🍲 Donor Intake</a></li>
-            <li class="nav-item"><a href="/shelter">🏠 Shelter Capacity</a></li>
-            <li class="nav-item"><a href="/driver">🚚 Driver Dispatch</a></li>
-            <li class="nav-item"><a href="/impact" class="active">📈 ESG Impact</a></li>
-            <li class="nav-item"><a href="/#team-modal" onclick="window.location.href='/?open=team-modal'">👥 Team & Contact</a></li>
+            <li class="nav-item"><a href="/shelter">🏠 Shelter Hub</a></li>
+            <li class="nav-item"><a href="/driver">🚚 Driver Console</a></li>
+            <li class="nav-item"><a href="/impact" class="active">📈 Impact Audit</a></li>
         </ul>
         <div class="nav-actions">
-            <button onclick="window.print()" class="btn btn-secondary">📄 Export PDF Report</button>
+            <button onclick="window.print()" class="btn btn-secondary">📄 Export PDF Audit</button>
         </div>
     </nav>
 
-    <main class="container" style="padding-top: 2rem;">
+    <main class="container">
 
-        <div style="margin-bottom: 2rem;">
-            <h1 style="font-family:var(--font-heading); font-size: 2rem; font-weight:700;">Community Impact & ESG Audit Report</h1>
-            <p style="color:var(--text-muted);">Quantified environmental diversion metrics, tax deduction valuations, and waste reduction statistics.</p>
+        <div class="page-header">
+            <h1 class="page-title">Community Impact & ESG Audit Report</h1>
+            <p class="page-subtitle">Quantified environmental diversion metrics, tax deduction valuations, and food category analytics.</p>
         </div>
 
-        <!-- Metrics Grid -->
+        <!-- Metrics Summary Grid -->
         <section class="dashboard-metrics">
             <div class="metric-card">
-                <div class="metric-icon emerald">🍲</div>
+                <div class="metric-icon">🍲</div>
                 <div class="metric-data">
                     <h3 id="imp-meals">--</h3>
                     <p>Total Meals Rescued</p>
@@ -44,7 +43,7 @@
             </div>
 
             <div class="metric-card">
-                <div class="metric-icon amber">⚖️</div>
+                <div class="metric-icon">⚖️</div>
                 <div class="metric-data">
                     <h3 id="imp-weight">--</h3>
                     <p>Food Waste Diverted (kg)</p>
@@ -52,7 +51,7 @@
             </div>
 
             <div class="metric-card">
-                <div class="metric-icon blue">🌍</div>
+                <div class="metric-icon">🌍</div>
                 <div class="metric-data">
                     <h3 id="imp-co2">--</h3>
                     <p>CO₂e Methane Avoided (kg)</p>
@@ -60,31 +59,31 @@
             </div>
 
             <div class="metric-card">
-                <div class="metric-icon purple">💰</div>
+                <div class="metric-icon">💰</div>
                 <div class="metric-data">
                     <h3 id="imp-usd">--</h3>
-                    <p>Est. Tax Deduction Value</p>
+                    <p>Est. Tax Credit Value</p>
                 </div>
             </div>
         </section>
 
-        <!-- Detailed Breakdown Panels -->
+        <!-- Detailed Breakdown Grid -->
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem; margin-top:1.5rem;">
             
-            <div style="background:var(--bg-card); border:1px solid var(--border-glass); border-radius:var(--radius-md); padding:1.5rem;">
-                <h3 style="font-family:var(--font-heading); font-size:1.2rem; margin-bottom:1rem; color:var(--primary);">🌱 Environmental Footprint Formula</h3>
-                <ul style="color:var(--text-muted); font-size:0.9rem; line-height:1.8; list-style-position:inside;">
-                    <li><b>Food Waste Multiplier:</b> Every 1.0 kg of food rescued prevents 1.90 kg of CO₂e landfill methane emissions.</li>
-                    <li><b>Meal Equivalent Factor:</b> 1 Standard Meal = 0.42 kg of edible food.</li>
-                    <li><b>IRS Tax Valuation:</b> Estimated $3.50 fair market value per meal saved for donor corporate tax credit documentation.</li>
-                    <li><b>Rescue Logistics Efficiency:</b> Average pickup-to-delivery time is 38 minutes.</li>
+            <div style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:1.5rem;">
+                <h3 style="font-size:1.1rem; margin-bottom:1rem; color:white;">🌱 Impact Calculation Principles</h3>
+                <ul style="color:var(--text-muted); font-size:0.88rem; line-height:1.8; list-style-position:inside;">
+                    <li><b>Landfill Methane Factor:</b> 1.0 kg of rescued edible food prevents 1.90 kg of CO₂e emissions.</li>
+                    <li><b>Meal Serving Standard:</b> 1 Standard Meal Equivalent = 0.42 kg of food.</li>
+                    <li><b>Tax Valuation Credit:</b> Estimated $3.50 fair market value per meal saved for donor tax records.</li>
+                    <li><b>Dispatch Response Time:</b> Average pickup-to-shelter transit duration is 38 minutes.</li>
                 </ul>
             </div>
 
-            <div style="background:var(--bg-card); border:1px solid var(--border-glass); border-radius:var(--radius-md); padding:1.5rem;">
-                <h3 style="font-family:var(--font-heading); font-size:1.2rem; margin-bottom:1rem; color:var(--primary);">📦 Rescued Food Category Breakdown</h3>
+            <div style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:1.5rem;">
+                <h3 style="font-size:1.1rem; margin-bottom:1rem; color:white;">📦 Rescued Food Category Breakdown</h3>
                 <div id="category-breakdown" style="display:flex; flex-direction:column; gap:0.75rem;">
-                    <p style="color:var(--text-muted);">Loading category stats...</p>
+                    <p style="color:var(--text-muted);">Loading category breakdown...</p>
                 </div>
             </div>
 
@@ -92,47 +91,18 @@
 
     </main>
 
-    <!-- App Footer Component -->
     <footer class="app-footer">
         <div class="footer-container">
             <div class="footer-brand">
                 <a href="/" class="brand-logo" style="display:inline-flex;">
                     <div class="brand-icon">🌱</div>
-                    <span>Surplus<span style="color:var(--primary)">To</span>Shelter</span>
+                    <span>SurplusToShelter</span>
                 </a>
-                <p class="footer-tagline">
-                    Real-time geo-spatial routing engine connecting corporate dining, restaurants, and caterers with local shelters & NGOs to eliminate urban food waste.
-                </p>
-                <div class="system-status-badge">
-                    <span class="status-dot"></span>
-                    <span>Google Maps API & Dispatch Engine Linked</span>
-                </div>
+                <p class="footer-tagline">Connecting corporate dining and restaurants with local shelters & NGOs.</p>
             </div>
-
-            <div class="footer-links-group">
-                <h4>Navigation & Portals</h4>
-                <ul>
-                    <li><a href="/">📊 Overview Dashboard</a></li>
-                    <li><a href="/donor">🍲 Restaurant Surplus Intake</a></li>
-                    <li><a href="/shelter">🏠 NGO Shelter Capacity</a></li>
-                    <li><a href="/driver">🚚 Rescue Dispatch</a></li>
-                    <li><a href="/impact">📈 ESG Impact Metrics</a></li>
-                </ul>
+            <div class="footer-bottom" style="grid-column:1 / -1;">
+                <p>&copy; 2026 Surplus-to-Shelter System • TechVertex Team</p>
             </div>
-
-            <div class="footer-links-group">
-                <h4>NGO & Food Rescue Hub</h4>
-                <ul>
-                    <li><a href="/?open=onboarding-modal">🔑 Guided Role Login & Location</a></li>
-                    <li><a href="/?open=ngo-request-modal">📋 Post Urgent NGO Food Request</a></li>
-                    <li><a href="/?open=team-modal">👥 NGO Partnership Inquiry</a></li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="footer-bottom">
-            <p>&copy; 2026 Surplus-to-Shelter Engine • Designed for Social Impact • Built by Sitaram & TechVertex Team</p>
-            <p style="color:var(--text-muted);">Location Precision Active • Powered by Flask & Google Maps API</p>
         </div>
     </footer>
 
@@ -158,11 +128,11 @@
                     const pct = Math.round((weight / total) * 100);
                     html += `
                     <div>
-                        <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:0.25rem;">
+                        <div style="display:flex; justify-content:space-between; font-size:0.83rem; margin-bottom:0.25rem;">
                             <span><b>${cat}</b></span>
                             <span style="color:var(--text-muted);">${weight.toFixed(1)} kg (${pct}%)</span>
                         </div>
-                        <div style="width:100%; height:8px; background:rgba(255,255,255,0.06); border-radius:4px; overflow:hidden;">
+                        <div style="width:100%; height:6px; background:#0f172a; border-radius:3px; overflow:hidden;">
                             <div style="width:${pct}%; height:100%; background:var(--primary);"></div>
                         </div>
                     </div>

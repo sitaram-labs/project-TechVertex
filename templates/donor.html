@@ -3,58 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Donor Intake Portal | Surplus-to-Shelter</title>
+    <title>Donor Intake | Surplus-to-Shelter</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
 
     <nav class="navbar">
-        <a href="/" class="brand-logo">
+        <a href="/portal" class="brand-logo">
             <div class="brand-icon">🌱</div>
-            <span>Surplus<span style="color:var(--primary)">To</span>Shelter</span>
+            <span>SurplusToShelter</span>
         </a>
         <ul class="nav-links">
-            <li class="nav-item"><a href="/">📊 Overview</a></li>
+            <li class="nav-item"><a href="/portal">📋 Main Menu</a></li>
             <li class="nav-item"><a href="/donor" class="active">🍲 Donor Intake</a></li>
-            <li class="nav-item"><a href="/shelter">🏠 Shelter Capacity</a></li>
-            <li class="nav-item"><a href="/driver">🚚 Driver Dispatch</a></li>
-            <li class="nav-item"><a href="/impact">📈 ESG Impact</a></li>
-            <li class="nav-item"><a href="/#team-modal" onclick="window.location.href='/?open=team-modal'">👥 Team & Contact</a></li>
+            <li class="nav-item"><a href="/shelter">🏠 Shelter Hub</a></li>
+            <li class="nav-item"><a href="/driver">🚚 Driver Console</a></li>
+            <li class="nav-item"><a href="/overview">📊 Live Map</a></li>
+            <li class="nav-item"><a href="/impact">📈 Impact Audit</a></li>
         </ul>
         <div class="nav-actions">
-            <a href="/" class="btn btn-secondary">← Back to Map</a>
+            <a href="/portal" class="btn btn-secondary">← Main Menu</a>
         </div>
     </nav>
 
-    <main class="container" style="max-width: 900px; padding-top: 2rem;">
+    <main class="container" style="max-width: 800px;">
         
-        <div style="text-align: center; margin-bottom: 2rem;">
-            <h1 style="font-family:var(--font-heading); font-size: 2.2rem; font-weight:700;">Post Surplus Food Donation</h1>
-            <p style="color:var(--text-muted);">Connect unsold edible food with nearby shelters in under 60 seconds.</p>
-        </div>
-
-        <!-- Preset Quick Fill Buttons -->
-        <div style="background:var(--bg-card); border:1px solid var(--border-glass); border-radius:var(--radius-md); padding:1.25rem; margin-bottom:2rem;">
-            <label class="form-label" style="margin-bottom:0.75rem;">⚡ One-Click Presets for Fast Intake:</label>
-            <div style="display:flex; flex-wrap:wrap; gap:0.75rem;">
-                <button type="button" onclick="fillPreset('catering')" class="btn btn-secondary" style="font-size:0.85rem;">🥗 Hotel Catering Surplus (45 Servings)</button>
-                <button type="button" onclick="fillPreset('bakery')" class="btn btn-secondary" style="font-size:0.85rem;">🥐 Bakery Day-End Items (30 Servings)</button>
-                <button type="button" onclick="fillPreset('produce')" class="btn btn-secondary" style="font-size:0.85rem;">🍎 Grocery Ripe Produce (60 Servings)</button>
-            </div>
+        <div class="page-header">
+            <h1 class="page-title">Post Food Donation</h1>
+            <p class="page-subtitle">Register unsold edible food for rapid pickup & dispatch to local shelter partners.</p>
         </div>
 
         <!-- Intake Form -->
-        <div style="background:var(--bg-card); border:1px solid var(--border-glass); border-radius:var(--radius-md); padding:2rem;">
+        <div style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:2rem;">
             <form id="donor-form" onsubmit="handleDonorSubmit(event)">
                 
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label">Donor Business / Facility Name *</label>
-                        <input type="text" id="donor_name" class="form-control" placeholder="e.g., Downtown Bistro & Bar" required>
+                        <input type="text" id="donor_name" class="form-control" placeholder="e.g. Central Bistro & Dining" required>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Food Title / Description *</label>
-                        <input type="text" id="food_title" class="form-control" placeholder="e.g., Tray-Sealed Lasagna & Salad Trays" required>
+                        <label class="form-label">Food Title & Description *</label>
+                        <input type="text" id="food_title" class="form-control" placeholder="e.g. Fresh Salad Trays & Baked Meals" required>
                     </div>
                 </div>
 
@@ -65,7 +55,7 @@
                             <option value="Prepared Meals">Prepared Meals (Hot/Cold)</option>
                             <option value="Bakery">Bakery & Breads</option>
                             <option value="Produce">Fresh Fruits & Vegetables</option>
-                            <option value="Dairy">Dairy & Refrigerated Items</option>
+                            <option value="Dairy">Dairy & Refrigerated</option>
                             <option value="Packaged">Packaged Non-Perishables</option>
                         </select>
                     </div>
@@ -92,27 +82,27 @@
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">Safety / Expiry Window (Hours) *</label>
+                        <label class="form-label">Safety Expiry Window *</label>
                         <select id="expiry_hours" class="form-control" required>
-                            <option value="2.0">🔥 2 Hours (Urgent Prepared Food)</option>
-                            <option value="4.0" selected>⏱️ 4 Hours (Standard Safe Window)</option>
-                            <option value="6.0">⏰ 6 Hours (Extended Shelf Life)</option>
+                            <option value="2.0">2 Hours (Urgent Prepared Food)</option>
+                            <option value="4.0" selected>4 Hours (Standard Safe Window)</option>
+                            <option value="6.0">6 Hours (Extended Shelf Life)</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Pickup Street Address *</label>
-                        <input type="text" id="address" class="form-control" placeholder="e.g., 500 Howard St, Suite 300" required>
+                        <input type="text" id="address" class="form-control" placeholder="e.g. Station Road, Jaipur, Rajasthan" required>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Notes for Volunteer Driver / Shelter Staff</label>
-                    <textarea id="notes" class="form-control" rows="3" placeholder="e.g., Loading dock behind building. Call manager upon arrival."></textarea>
+                    <label class="form-label">Driver Pickup Notes</label>
+                    <textarea id="notes" class="form-control" rows="3" placeholder="e.g. Loading dock behind building. Call manager upon arrival."></textarea>
                 </div>
 
                 <div style="display:flex; justify-content:flex-end; gap:1rem; margin-top:1.5rem;">
                     <a href="/" class="btn btn-secondary">Cancel</a>
-                    <button type="submit" class="btn btn-primary" style="padding:0.75rem 2rem;">🚀 Post & Auto-Match Shelter</button>
+                    <button type="submit" class="btn btn-primary" style="padding:0.65rem 1.75rem;">Post Food Donation</button>
                 </div>
 
             </form>
@@ -120,85 +110,24 @@
 
     </main>
 
-    <!-- App Footer Component -->
     <footer class="app-footer">
         <div class="footer-container">
             <div class="footer-brand">
                 <a href="/" class="brand-logo" style="display:inline-flex;">
                     <div class="brand-icon">🌱</div>
-                    <span>Surplus<span style="color:var(--primary)">To</span>Shelter</span>
+                    <span>SurplusToShelter</span>
                 </a>
                 <p class="footer-tagline">
-                    Real-time geo-spatial routing engine connecting corporate dining, restaurants, and caterers with local shelters & NGOs to eliminate urban food waste.
+                    Connecting corporate dining and restaurants with local shelters & NGOs.
                 </p>
-                <div class="system-status-badge">
-                    <span class="status-dot"></span>
-                    <span>Google Maps API & Dispatch Engine Linked</span>
-                </div>
             </div>
-
-            <div class="footer-links-group">
-                <h4>Navigation & Portals</h4>
-                <ul>
-                    <li><a href="/">📊 Overview Dashboard</a></li>
-                    <li><a href="/donor">🍲 Restaurant Surplus Intake</a></li>
-                    <li><a href="/shelter">🏠 NGO Shelter Capacity</a></li>
-                    <li><a href="/driver">🚚 Rescue Dispatch</a></li>
-                    <li><a href="/impact">📈 ESG Impact Metrics</a></li>
-                </ul>
+            <div class="footer-bottom" style="grid-column:1 / -1;">
+                <p>&copy; 2026 Surplus-to-Shelter System • TechVertex Team</p>
             </div>
-
-            <div class="footer-links-group">
-                <h4>NGO & Food Rescue Hub</h4>
-                <ul>
-                    <li><a href="/?open=onboarding-modal">🔑 Guided Role Login & Location</a></li>
-                    <li><a href="/?open=ngo-request-modal">📋 Post Urgent NGO Food Request</a></li>
-                    <li><a href="/?open=team-modal">👥 NGO Partnership Inquiry</a></li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="footer-bottom">
-            <p>&copy; 2026 Surplus-to-Shelter Engine • Designed for Social Impact • Built by Sitaram & TechVertex Team</p>
-            <p style="color:var(--text-muted);">Location Precision Active • Powered by Flask & Google Maps API</p>
         </div>
     </footer>
 
     <script>
-        function fillPreset(type) {
-            if (type === 'catering') {
-                document.getElementById('donor_name').value = "LMB (Laxmi Misthan Bhandar)";
-                document.getElementById('food_title').value = "Fresh Paneer Sabzi, Dal Baati & Chapati Trays";
-                document.getElementById('category').value = "Prepared Meals";
-                document.getElementById('storage_type').value = "Heated Container";
-                document.getElementById('servings').value = "60";
-                document.getElementById('weight_kg').value = "25.0";
-                document.getElementById('expiry_hours').value = "3.0";
-                document.getElementById('address').value = "Johari Bazar, Jaipur, Rajasthan, India";
-                document.getElementById('notes').value = "Freshly prepared for evening event, hot insulated boxes ready for pickup.";
-            } else if (type === 'bakery') {
-                document.getElementById('donor_name').value = "Rawat Misthan Bhandar";
-                document.getElementById('food_title').value = "Surplus Pyaaz Kachori & Mawa Sweets";
-                document.getElementById('category').value = "Bakery";
-                document.getElementById('storage_type').value = "Ambient";
-                document.getElementById('servings').value = "40";
-                document.getElementById('weight_kg').value = "15.0";
-                document.getElementById('expiry_hours').value = "5.0";
-                document.getElementById('address').value = "Station Road, Jaipur, Rajasthan, India";
-                document.getElementById('notes').value = "Fresh morning batch, packed in clean food-grade boxes.";
-            } else if (type === 'produce') {
-                document.getElementById('donor_name').value = "Chokhi Dhani Resort & Restaurant";
-                document.getElementById('food_title').value = "Fresh Apples, Milk Cartons & Seasonal Fruits";
-                document.getElementById('category').value = "Produce";
-                document.getElementById('storage_type').value = "Refrigerated";
-                document.getElementById('servings').value = "75";
-                document.getElementById('weight_kg').value = "30.0";
-                document.getElementById('expiry_hours').value = "8.0";
-                document.getElementById('address').value = "Tonk Road, Jaipur, Rajasthan, India";
-                document.getElementById('notes').value = "Fresh farm produce, cold chain intact, ready for distribution.";
-            }
-        }
-
         async function handleDonorSubmit(e) {
             e.preventDefault();
             const payload = {
@@ -210,8 +139,8 @@
                 weight_kg: parseFloat(document.getElementById('weight_kg').value),
                 expiry_hours: parseFloat(document.getElementById('expiry_hours').value),
                 address: document.getElementById('address').value,
-                lat: 37.7850 + (Math.random() * 0.01 - 0.005),
-                lng: -122.4030 + (Math.random() * 0.01 - 0.005),
+                lat: 26.9124 + (Math.random() * 0.01 - 0.005),
+                lng: 75.7873 + (Math.random() * 0.01 - 0.005),
                 notes: document.getElementById('notes').value
             };
 
@@ -223,7 +152,7 @@
                 }).then(r => r.json());
 
                 if (res.success) {
-                    alert(`✅ Food Donation Posted!\n\nMatching Engine Recommendation:\n${res.recommended_match ? res.recommended_match.shelter_name + " (" + res.recommended_match.match_score + "% Match)" : "Searching nearby drivers..."}`);
+                    alert("✅ Food Donation Posted Successfully!");
                     window.location.href = '/';
                 } else {
                     alert("Error posting donation: " + res.error);

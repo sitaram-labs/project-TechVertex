@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign In & Account Access | Surplus-to-Shelter</title>
+    <title>Sign In | Surplus-to-Shelter</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <style>
         .auth-container {
@@ -16,97 +16,62 @@
 
         .auth-card {
             width: 100%;
-            max-width: 480px;
-            background: rgba(15, 23, 42, 0.85);
-            border: 1px solid var(--border-glass);
-            backdrop-filter: blur(20px);
-            border-radius: var(--radius-lg);
-            padding: 2.5rem;
-            box-shadow: var(--shadow-lg);
+            max-width: 440px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 2.25rem;
         }
 
         .auth-tabs {
             display: flex;
             gap: 0.5rem;
-            background: rgba(30, 41, 59, 0.6);
-            padding: 0.35rem;
-            border-radius: var(--radius-md);
-            margin-bottom: 1.75rem;
-            border: 1px solid var(--border-glass);
+            background: #0f172a;
+            padding: 0.25rem;
+            border-radius: var(--radius-sm);
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
         }
 
         .auth-tab-btn {
             flex: 1;
-            padding: 0.65rem;
+            padding: 0.55rem;
             border: none;
             background: transparent;
             color: var(--text-muted);
-            font-family: var(--font-heading);
+            font-family: var(--font-main);
             font-weight: 600;
-            font-size: 0.95rem;
-            border-radius: var(--radius-sm);
+            font-size: 0.88rem;
+            border-radius: 4px;
             cursor: pointer;
-            transition: all 0.25s ease;
         }
 
         .auth-tab-btn.active {
             background: var(--primary);
             color: white;
-            box-shadow: 0 4px 14px var(--primary-glow);
-        }
-
-        .form-control-simple {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            background: rgba(15, 23, 42, 0.8);
-            border: 1px solid var(--border-glass);
-            color: white;
-            border-radius: 8px;
-            font-family: var(--font-main);
-            font-size: 0.92rem;
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .form-control-simple:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px var(--primary-glow);
         }
     </style>
 </head>
 <body>
 
-    <!-- Navigation Header -->
+    <!-- Minimal Landing Navigation Header -->
     <nav class="navbar">
         <a href="/" class="brand-logo">
             <div class="brand-icon">🌱</div>
-            <span>Surplus<span style="color:var(--primary)">To</span>Shelter</span>
+            <span>SurplusToShelter</span>
         </a>
-
-        <ul class="nav-links">
-            <li class="nav-item"><a href="/">📊 Overview</a></li>
-            <li class="nav-item"><a href="/donor">🍲 Donor Intake</a></li>
-            <li class="nav-item"><a href="/shelter">🏠 Shelter Capacity</a></li>
-            <li class="nav-item"><a href="/driver">🚚 Driver Dispatch</a></li>
-            <li class="nav-item"><a href="/impact">📈 ESG Impact</a></li>
-        </ul>
-
-        <div class="nav-actions">
-            <a href="/" class="btn btn-secondary">&larr; Back to Dashboard</a>
-        </div>
     </nav>
 
-    <!-- Main Auth Portal Container -->
+    <!-- Main Auth Container -->
     <main class="auth-container">
         <div class="auth-card">
 
-            <div style="text-align: center; margin-bottom: 1.75rem;">
-                <div style="font-size: 2.2rem; margin-bottom: 0.35rem;">🔐</div>
-                <h2 style="font-family:var(--font-heading); font-size:1.5rem; font-weight:700; color:white;">
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+                <h2 style="font-size:1.4rem; font-weight:700; color:white;">
                     Account Sign In
                 </h2>
-                <p style="font-size:0.86rem; color:var(--text-muted); margin-top:0.35rem;">
-                    Enter your credentials and location to access the food rescue network.
+                <p style="font-size:0.85rem; color:var(--text-muted); margin-top:0.25rem;">
+                    Sign in or create account to enter the food rescue workspace
                 </p>
             </div>
 
@@ -117,59 +82,59 @@
             </div>
 
             <!-- Form 1: Clean Sign In -->
-            <form id="form-login" onsubmit="handleAuthLogin(event)" style="display:flex; flex-direction:column; gap:1.1rem;">
-                <div>
-                    <label style="font-size:0.83rem; font-weight:600; color:var(--text-muted); display:block; margin-bottom:0.35rem;">User Email Address *</label>
-                    <input type="email" id="login-email" placeholder="name@domain.com" required class="form-control-simple">
+            <form id="form-login" onsubmit="handleAuthLogin(event)" style="display:flex; flex-direction:column; gap:1rem;">
+                <div class="form-group">
+                    <label class="form-label">User Email Address *</label>
+                    <input type="email" id="login-email" placeholder="name@domain.com" required class="form-control">
                 </div>
-                <div>
-                    <label style="font-size:0.83rem; font-weight:600; color:var(--text-muted); display:block; margin-bottom:0.35rem;">Password *</label>
-                    <input type="password" id="login-password" placeholder="Enter your password" required class="form-control-simple">
+                <div class="form-group">
+                    <label class="form-label">Password *</label>
+                    <input type="password" id="login-password" placeholder="Enter your password" required class="form-control">
                 </div>
-                <div>
-                    <label style="font-size:0.83rem; font-weight:600; color:var(--text-muted); display:block; margin-bottom:0.35rem;">Location / City *</label>
-                    <input type="text" id="login-location" placeholder="e.g. Jaipur, Rajasthan, India" required class="form-control-simple">
+                <div class="form-group">
+                    <label class="form-label">Location / City *</label>
+                    <input type="text" id="login-location" placeholder="e.g. Jaipur, Rajasthan, India" required class="form-control">
                 </div>
-                <div>
-                    <label style="font-size:0.83rem; font-weight:600; color:var(--text-muted); display:block; margin-bottom:0.35rem;">Account Role *</label>
-                    <select id="login-role" class="form-control-simple">
+                <div class="form-group">
+                    <label class="form-label">Account Role *</label>
+                    <select id="login-role" class="form-control">
                         <option value="donor">🍲 Food Donor / Restaurant</option>
                         <option value="shelter">🏠 NGO / Shelter</option>
                         <option value="driver">🚚 Volunteer Driver</option>
                     </select>
                 </div>
-                <button type="submit" class="btn btn-primary" style="width:100%; padding:0.8rem; font-size:0.95rem; margin-top:0.5rem; border-radius:8px;">
-                    Sign In & Access Dashboard &rarr;
+                <button type="submit" class="btn btn-primary" style="width:100%; padding:0.7rem; margin-top:0.3rem;">
+                    Sign In & Access Workspace &rarr;
                 </button>
             </form>
 
             <!-- Form 2: Clean Register New Account -->
-            <form id="form-register" onsubmit="handleAuthRegister(event)" style="display:none; flex-direction:column; gap:1.1rem;">
-                <div>
-                    <label style="font-size:0.83rem; font-weight:600; color:var(--text-muted); display:block; margin-bottom:0.35rem;">Organization / User Name *</label>
-                    <input type="text" id="reg-name" placeholder="e.g. Green Earth NGO or Central Kitchen" required class="form-control-simple">
+            <form id="form-register" onsubmit="handleAuthRegister(event)" style="display:none; flex-direction:column; gap:1rem;">
+                <div class="form-group">
+                    <label class="form-label">Organization / User Name *</label>
+                    <input type="text" id="reg-name" placeholder="e.g. Green Earth NGO or Central Kitchen" required class="form-control">
                 </div>
-                <div>
-                    <label style="font-size:0.83rem; font-weight:600; color:var(--text-muted); display:block; margin-bottom:0.35rem;">Email Address *</label>
-                    <input type="email" id="reg-email" placeholder="name@domain.com" required class="form-control-simple">
+                <div class="form-group">
+                    <label class="form-label">Email Address *</label>
+                    <input type="email" id="reg-email" placeholder="name@domain.com" required class="form-control">
                 </div>
-                <div>
-                    <label style="font-size:0.83rem; font-weight:600; color:var(--text-muted); display:block; margin-bottom:0.35rem;">Password *</label>
-                    <input type="password" id="reg-password" placeholder="Create a password" required class="form-control-simple">
+                <div class="form-group">
+                    <label class="form-label">Password *</label>
+                    <input type="password" id="reg-password" placeholder="Create a password" required class="form-control">
                 </div>
-                <div>
-                    <label style="font-size:0.83rem; font-weight:600; color:var(--text-muted); display:block; margin-bottom:0.35rem;">Street Address & Location *</label>
-                    <input type="text" id="reg-address" placeholder="e.g. Johari Bazar, Jaipur, Rajasthan, India" required class="form-control-simple">
+                <div class="form-group">
+                    <label class="form-label">Street Address & Location *</label>
+                    <input type="text" id="reg-address" placeholder="e.g. Johari Bazar, Jaipur, Rajasthan, India" required class="form-control">
                 </div>
-                <div>
-                    <label style="font-size:0.83rem; font-weight:600; color:var(--text-muted); display:block; margin-bottom:0.35rem;">Account Role *</label>
-                    <select id="reg-role" class="form-control-simple">
+                <div class="form-group">
+                    <label class="form-label">Account Role *</label>
+                    <select id="reg-role" class="form-control">
                         <option value="donor">🍲 Food Donor / Restaurant</option>
                         <option value="shelter">🏠 NGO / Shelter</option>
                         <option value="driver">🚚 Volunteer Driver</option>
                     </select>
                 </div>
-                <button type="submit" class="btn btn-primary" style="width:100%; padding:0.8rem; font-size:0.95rem; margin-top:0.5rem; border-radius:8px;">
+                <button type="submit" class="btn btn-primary" style="width:100%; padding:0.7rem; margin-top:0.3rem;">
                     Register Account & Access &rarr;
                 </button>
             </form>
@@ -177,20 +142,17 @@
         </div>
     </main>
 
-    <!-- App Footer Component -->
     <footer class="app-footer">
         <div class="footer-container">
             <div class="footer-brand">
                 <a href="/" class="brand-logo" style="display:inline-flex;">
                     <div class="brand-icon">🌱</div>
-                    <span>Surplus<span style="color:var(--primary)">To</span>Shelter</span>
+                    <span>SurplusToShelter</span>
                 </a>
-                <p class="footer-tagline">
-                    Real-time geo-spatial routing engine connecting corporate dining, restaurants, and caterers with local shelters & NGOs to eliminate urban food waste.
-                </p>
+                <p class="footer-tagline">Connecting corporate dining and restaurants with local shelters & NGOs.</p>
             </div>
             <div class="footer-bottom" style="grid-column: 1 / -1;">
-                <p>&copy; 2026 Surplus-to-Shelter Engine • Built by Sitaram & TechVertex Team</p>
+                <p>&copy; 2026 Surplus-to-Shelter System • TechVertex Team</p>
             </div>
         </div>
     </footer>
@@ -231,12 +193,11 @@
                 }).then(r => r.json());
 
                 if (res.success && res.user) {
-                    // Update user profile location if provided
                     if (location) res.user.address = location;
                     saveUserProfile(res.user);
                     showToast('🎉 Login Successful!', `Welcome back, ${escapeHtml(res.user.name)}! Redirecting to workspace...`, 'emerald');
                     setTimeout(() => {
-                        window.location.href = '/';
+                        window.location.href = '/portal';
                     }, 800);
                 }
             } catch (err) {
@@ -263,7 +224,7 @@
                     saveUserProfile(res.user);
                     showToast('🎉 Account Registered!', `Welcome, ${escapeHtml(res.user.name)}! Redirecting to workspace...`, 'purple');
                     setTimeout(() => {
-                        window.location.href = '/';
+                        window.location.href = '/portal';
                     }, 800);
                 } else {
                     showToast('⚠️ Registration Error', res.error || 'Registration failed.', 'rose');
@@ -275,4 +236,3 @@
     </script>
 </body>
 </html>
-

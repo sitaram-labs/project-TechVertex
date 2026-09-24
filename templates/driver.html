@@ -3,34 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Driver Dispatch View | Surplus-to-Shelter</title>
+    <title>Driver Dispatch Console | Surplus-to-Shelter</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
 
     <nav class="navbar">
-        <a href="/" class="brand-logo">
+        <a href="/portal" class="brand-logo">
             <div class="brand-icon">🌱</div>
-            <span>Surplus<span style="color:var(--primary)">To</span>Shelter</span>
+            <span>SurplusToShelter</span>
         </a>
         <ul class="nav-links">
-            <li class="nav-item"><a href="/">📊 Overview</a></li>
+            <li class="nav-item"><a href="/portal">📋 Main Menu</a></li>
             <li class="nav-item"><a href="/donor">🍲 Donor Intake</a></li>
-            <li class="nav-item"><a href="/shelter">🏠 Shelter Capacity</a></li>
-            <li class="nav-item"><a href="/driver" class="active">🚚 Driver Dispatch</a></li>
-            <li class="nav-item"><a href="/impact">📈 ESG Impact</a></li>
-            <li class="nav-item"><a href="/#team-modal" onclick="window.location.href='/?open=team-modal'">👥 Team & Contact</a></li>
+            <li class="nav-item"><a href="/shelter">🏠 Shelter Hub</a></li>
+            <li class="nav-item"><a href="/driver" class="active">🚚 Driver Console</a></li>
+            <li class="nav-item"><a href="/overview">📊 Live Map</a></li>
+            <li class="nav-item"><a href="/impact">📈 Impact Audit</a></li>
         </ul>
         <div class="nav-actions">
-            <a href="/" class="btn btn-secondary">← Back to Map</a>
+            <a href="/portal" class="btn btn-secondary">← Main Menu</a>
         </div>
     </nav>
 
-    <main class="container" style="max-width:900px; padding-top: 2rem;">
+    <main class="container" style="max-width: 900px;">
 
-        <div style="margin-bottom: 2rem;">
-            <h1 style="font-family:var(--font-heading); font-size: 2rem; font-weight:700;">Volunteer Driver Dispatch Console</h1>
-            <p style="color:var(--text-muted);">Real-time pickup routes, safety timers, and 1-click status transitions.</p>
+        <div class="page-header">
+            <h1 class="page-title">Driver Dispatch Console</h1>
+            <p class="page-subtitle">View assigned food rescues, pickup locations, and confirm shelter drop-offs.</p>
         </div>
 
         <div id="driver-assignments" style="display:flex; flex-direction:column; gap:1.25rem;">
@@ -39,47 +39,18 @@
 
     </main>
 
-    <!-- App Footer Component -->
     <footer class="app-footer">
         <div class="footer-container">
             <div class="footer-brand">
                 <a href="/" class="brand-logo" style="display:inline-flex;">
                     <div class="brand-icon">🌱</div>
-                    <span>Surplus<span style="color:var(--primary)">To</span>Shelter</span>
+                    <span>SurplusToShelter</span>
                 </a>
-                <p class="footer-tagline">
-                    Real-time geo-spatial routing engine connecting corporate dining, restaurants, and caterers with local shelters & NGOs to eliminate urban food waste.
-                </p>
-                <div class="system-status-badge">
-                    <span class="status-dot"></span>
-                    <span>Google Maps API & Dispatch Engine Linked</span>
-                </div>
+                <p class="footer-tagline">Connecting corporate dining and restaurants with local shelters & NGOs.</p>
             </div>
-
-            <div class="footer-links-group">
-                <h4>Navigation & Portals</h4>
-                <ul>
-                    <li><a href="/">📊 Overview Dashboard</a></li>
-                    <li><a href="/donor">🍲 Restaurant Surplus Intake</a></li>
-                    <li><a href="/shelter">🏠 NGO Shelter Capacity</a></li>
-                    <li><a href="/driver">🚚 Rescue Dispatch</a></li>
-                    <li><a href="/impact">📈 ESG Impact Metrics</a></li>
-                </ul>
+            <div class="footer-bottom" style="grid-column:1 / -1;">
+                <p>&copy; 2026 Surplus-to-Shelter System • TechVertex Team</p>
             </div>
-
-            <div class="footer-links-group">
-                <h4>NGO & Food Rescue Hub</h4>
-                <ul>
-                    <li><a href="/?open=onboarding-modal">🔑 Guided Role Login & Location</a></li>
-                    <li><a href="/?open=ngo-request-modal">📋 Post Urgent NGO Food Request</a></li>
-                    <li><a href="/?open=team-modal">👥 NGO Partnership Inquiry</a></li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="footer-bottom">
-            <p>&copy; 2026 Surplus-to-Shelter Engine • Designed for Social Impact • Built by Sitaram & TechVertex Team</p>
-            <p style="color:var(--text-muted);">Location Precision Active • Powered by Flask & Google Maps API</p>
         </div>
     </footer>
 
@@ -94,9 +65,9 @@
 
                 if (active.length === 0) {
                     container.innerHTML = `
-                        <div style="background:var(--bg-card); border:1px solid var(--border-glass); padding:3rem; text-align:center; border-radius:var(--radius-md);">
-                            <h3 style="color:var(--text-muted); margin-bottom:0.5rem;">🎉 All Dispatched Deliveries Completed!</h3>
-                            <p style="font-size:0.88rem; color:var(--text-dim);">No pending pickup tasks assigned right now. Check back when a donor posts new surplus food.</p>
+                        <div style="background:var(--bg-card); border:1px solid var(--border-color); padding:2.5rem; text-align:center; border-radius:var(--radius-md);">
+                            <h3 style="color:white; margin-bottom:0.4rem;">No Pending Rescue Dispatches</h3>
+                            <p style="font-size:0.88rem; color:var(--text-muted);">All active food rescues have been delivered. Check back when new surplus food is posted.</p>
                         </div>
                     `;
                     return;
@@ -105,41 +76,41 @@
                 let html = '';
                 active.forEach(d => {
                     html += `
-                    <div style="background:var(--bg-card); border:1px solid var(--border-highlight); border-radius:var(--radius-md); padding:1.5rem;">
+                    <div style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:1.5rem;">
                         <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:1rem;">
                             <div>
-                                <span class="badge-status ${d.status}">${d.status}</span>
-                                <h3 style="font-family:var(--font-heading); font-size:1.35rem; font-weight:700; margin-top:0.35rem;">${escapeHtml(d.food_title)}</h3>
-                                <p style="font-size:0.85rem; color:var(--text-muted);">Assigned Driver: <b>${escapeHtml(d.driver_name || 'Volunteer')}</b></p>
+                                <span class="badge-status">${d.status}</span>
+                                <h3 style="font-size:1.2rem; font-weight:700; color:white; margin-top:0.35rem;">${escapeHtml(d.food_title)}</h3>
+                                <p style="font-size:0.83rem; color:var(--text-muted);">Assigned Driver: <b>${escapeHtml(d.driver_name || 'Volunteer Driver')}</b></p>
                             </div>
                             <div style="text-align:right;">
-                                <span style="font-weight:700; color:var(--accent-amber); font-size:0.9rem;">⏱️ ${d.time_remaining_str}</span>
-                                <div style="font-size:0.8rem; color:var(--text-muted);">${d.weight_kg} kg (${d.servings} servings)</div>
+                                <span style="font-weight:700; color:#f59e0b; font-size:0.88rem;">⏱️ ${d.time_remaining_str}</span>
+                                <div style="font-size:0.8rem; color:var(--text-muted); margin-top:0.25rem;">${d.weight_kg} kg (${d.servings} servings)</div>
                             </div>
                         </div>
 
-                        <!-- Route Cards -->
+                        <!-- Route Steps Grid -->
                         <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1.25rem;">
-                            <div style="background:rgba(30,41,59,0.5); padding:1rem; border-radius:8px; border:1px solid rgba(255,255,255,0.05);">
-                                <small style="color:var(--primary); font-weight:600;">STEP 1: PICKUP DONOR</small>
-                                <h4 style="font-size:1rem; margin:0.2rem 0;">${escapeHtml(d.donor_name)}</h4>
+                            <div style="background:#0f172a; padding:1rem; border-radius:var(--radius-sm); border:1px solid var(--border-color);">
+                                <small style="color:var(--primary); font-weight:600; text-transform:uppercase; font-size:0.75rem;">STEP 1: PICKUP DONOR</small>
+                                <h4 style="font-size:0.95rem; color:white; margin:0.25rem 0;">${escapeHtml(d.donor_name)}</h4>
                                 <p style="font-size:0.82rem; color:var(--text-muted);">📍 ${escapeHtml(d.location.address)}</p>
-                                <p style="font-size:0.8rem; color:var(--text-dim); margin-top:0.3rem;">Notes: ${escapeHtml(d.notes || 'None')}</p>
+                                <p style="font-size:0.8rem; color:var(--text-dim); margin-top:0.25rem;">Notes: ${escapeHtml(d.notes || 'None')}</p>
                             </div>
 
-                            <div style="background:rgba(30,41,59,0.5); padding:1rem; border-radius:8px; border:1px solid rgba(255,255,255,0.05);">
-                                <small style="color:var(--accent-purple); font-weight:600;">STEP 2: DROP-OFF SHELTER</small>
-                                <h4 style="font-size:1rem; margin:0.2rem 0;">${escapeHtml(d.matched_shelter_name || 'Shelter Target')}</h4>
+                            <div style="background:#0f172a; padding:1rem; border-radius:var(--radius-sm); border:1px solid var(--border-color);">
+                                <small style="color:#a855f7; font-weight:600; text-transform:uppercase; font-size:0.75rem;">STEP 2: DROP-OFF SHELTER</small>
+                                <h4 style="font-size:0.95rem; color:white; margin:0.25rem 0;">${escapeHtml(d.matched_shelter_name || 'Target Shelter')}</h4>
                                 <p style="font-size:0.82rem; color:var(--text-muted);">📍 Central Shelter Hub</p>
-                                <p style="font-size:0.8rem; color:var(--text-dim); margin-top:0.3rem;">Storage: ${escapeHtml(d.storage_type)}</p>
+                                <p style="font-size:0.8rem; color:var(--text-dim); margin-top:0.25rem;">Storage Requirement: ${escapeHtml(d.storage_type)}</p>
                             </div>
                         </div>
 
                         <!-- Action Controls -->
-                        <div style="display:flex; justify-content:flex-end; gap:0.75rem; border-top:1px solid rgba(255,255,255,0.05); padding-top:1rem;">
+                        <div style="display:flex; justify-content:flex-end; gap:0.75rem; border-top:1px solid var(--border-color); padding-top:1rem;">
                             ${d.status === 'Matched' ? 
                                 `<button onclick="updateStatus('${d.id}', 'In Transit')" class="btn btn-primary">🚚 Confirm Pickup (Start Route)</button>` : 
-                                `<button onclick="updateStatus('${d.id}', 'Delivered')" class="btn btn-primary" style="background:linear-gradient(135deg,#059669,#047857);">✅ Confirm Handover at Shelter</button>`
+                                `<button onclick="updateStatus('${d.id}', 'Delivered')" class="btn btn-primary">✅ Confirm Delivery at Shelter</button>`
                             }
                         </div>
                     </div>
@@ -148,7 +119,7 @@
 
                 container.innerHTML = html;
             } catch (err) {
-                container.innerHTML = '<p style="color:var(--accent-rose);">Failed to load dispatch tasks.</p>';
+                container.innerHTML = '<p style="color:#ef4444;">Failed to load dispatch tasks.</p>';
             }
         }
 
@@ -163,7 +134,7 @@
                 if (res.success) {
                     loadDriverAssignments();
                     if (newStatus === 'Delivered') {
-                        alert("🎉 Rescue Delivered Successfully! Metrics updated.");
+                        alert("✅ Rescue Delivered Successfully!");
                     }
                 }
             } catch (err) {

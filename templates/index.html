@@ -3,126 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Surplus-to-Shelter | Real-Time Food Rescue Routing</title>
-    <!-- Custom CSS -->
+    <title>Overview | Surplus-to-Shelter</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
 
-    <!-- Navigation Header -->
+    <!-- Classic Navigation Header -->
     <nav class="navbar">
-        <a href="/" class="brand-logo">
+        <a href="/portal" class="brand-logo">
             <div class="brand-icon">🌱</div>
-            <span>Surplus<span style="color:var(--primary)">To</span>Shelter</span>
+            <span>SurplusToShelter</span>
         </a>
 
         <ul class="nav-links">
-            <li class="nav-item"><a href="/" class="active">📊 Overview</a></li>
+            <li class="nav-item"><a href="/portal">📋 Main Menu</a></li>
             <li class="nav-item"><a href="/donor">🍲 Donor Intake</a></li>
-            <li class="nav-item"><a href="/shelter">🏠 Shelter Capacity</a></li>
-            <li class="nav-item"><a href="/driver">🚚 Driver Dispatch</a></li>
-            <li class="nav-item"><a href="/impact">📈 ESG Impact</a></li>
-            <li class="nav-item"><a href="#" onclick="openModal('team-modal')">👥 Team & Contact</a></li>
+            <li class="nav-item"><a href="/shelter">🏠 Shelter Hub</a></li>
+            <li class="nav-item"><a href="/driver">🚚 Driver Console</a></li>
+            <li class="nav-item"><a href="/overview" class="active">📊 Live Map</a></li>
+            <li class="nav-item"><a href="/impact">📈 Impact Audit</a></li>
         </ul>
 
-        <div class="nav-actions" style="display:flex; align-items:center; gap:0.75rem;">
-            <!-- User Profile Nav Badge -->
-            <div class="user-profile-badge" id="nav-user-badge" onclick="window.location.href='/login'" title="Click to Switch Account or Role">
-                <span>🍲 <b>TechVertex Cafe</b></span>
-            </div>
-
-            <a href="/login" class="btn btn-secondary" style="font-size:0.85rem; border-color:rgba(255,255,255,0.2);">
-                🔑 Sign In / Register
-            </a>
-
-            <button onclick="openModal('ngo-request-modal')" class="btn btn-secondary" style="border-color:var(--accent-purple); color:var(--accent-purple); font-size:0.85rem;">
-                📋 Request Food (NGO)
-            </button>
-            
-            <a href="/donor" class="btn btn-primary" style="font-size:0.85rem;">+ Post Surplus Food</a>
+        <div class="nav-actions">
+            <a href="/portal" class="btn btn-secondary">← Main Menu</a>
         </div>
     </nav>
 
     <!-- Main Content Container -->
     <main class="container">
 
-        <!-- Live Geo-Routing Status Banner -->
-        <div class="demo-banner">
-            <div class="demo-info">
-                <div class="live-dot"></div>
-                <div>
-                    <strong style="color:white; font-family:var(--font-heading);">Real-Time Urban Food Rescue Engine</strong>
-                    <p style="font-size:0.83rem; color:var(--text-muted);">Connecting food donors, local shelters, and volunteer drivers seamlessly.</p>
-                </div>
-            </div>
-            <div style="display:flex; gap:0.5rem;">
-                <a href="/login" class="btn btn-primary" style="font-size:0.85rem;">
-                    🔑 Sign In / Location Setup
-                </a>
-            </div>
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">Real-Time Urban Food Rescue Dispatch</h1>
+            <p class="page-subtitle">Live geo-spatial tracking connecting food business surplus with local shelter demand.</p>
         </div>
 
         <!-- Metric Summary Cards -->
         <section class="dashboard-metrics">
             <div class="metric-card">
-                <div class="metric-icon emerald">🍲</div>
+                <div class="metric-icon">🍲</div>
                 <div class="metric-data">
-                    <h3 id="metric-meals">-- Meals</h3>
+                    <h3 id="metric-meals">--</h3>
                     <p>Total Servings Rescued</p>
                 </div>
             </div>
 
             <div class="metric-card">
-                <div class="metric-icon amber">⚖️</div>
+                <div class="metric-icon">⚖️</div>
                 <div class="metric-data">
-                    <h3 id="metric-weight">-- kg</h3>
-                    <p>Food Waste Diverted</p>
+                    <h3 id="metric-weight">--</h3>
+                    <p>Food Waste Diverted (kg)</p>
                 </div>
             </div>
 
             <div class="metric-card">
-                <div class="metric-icon blue">🌍</div>
+                <div class="metric-icon">🌍</div>
                 <div class="metric-data">
-                    <h3 id="metric-co2">-- kg</h3>
-                    <p>CO₂e Emissions Saved</p>
+                    <h3 id="metric-co2">--</h3>
+                    <p>CO₂e Methane Avoided</p>
                 </div>
             </div>
 
             <div class="metric-card">
-                <div class="metric-icon purple">⚡</div>
+                <div class="metric-icon">⚡</div>
                 <div class="metric-data">
-                    <h3 id="metric-active">-- Active</h3>
-                    <p>Live Rescues In Progress</p>
+                    <h3 id="metric-active">--</h3>
+                    <p>Active Rescues In Progress</p>
                 </div>
             </div>
         </section>
 
-        <!-- Interactive Map & Feed Grid -->
+        <!-- Main Workspace Grid -->
         <div class="grid-main">
             <!-- Map View Panel -->
             <div class="map-panel">
                 <div class="panel-header">
-                    <div class="panel-title">
-                        <span style="color:var(--primary);">🗺️ Live Urban Dispatch Map (Precise Coordinates)</span>
-                    </div>
-                    <div style="font-size:0.8rem; color:var(--text-muted); display:flex; gap:0.75rem;">
+                    <h3 class="panel-title">🗺️ Urban Dispatch Map</h3>
+                    <div style="font-size:0.78rem; color:var(--text-muted); display:flex; gap:0.75rem;">
                         <span>🟢 Donor</span>
                         <span>🟣 Shelter</span>
                         <span>🔵 NGO Request</span>
-                        <span>🟡 Route</span>
                     </div>
                 </div>
                 <div id="map"></div>
             </div>
 
-            <!-- Real-Time Surplus & NGO Feed Panel -->
+            <!-- Feed Panel -->
             <div class="feed-panel">
                 <div class="feed-tabs">
                     <button class="feed-tab-btn active" id="tab-btn-donations" onclick="switchFeedTab('donations')">
-                        📦 Restaurant Surplus Feed
+                        📦 Food Surplus Feed
                     </button>
                     <button class="feed-tab-btn" id="tab-btn-ngo" onclick="switchFeedTab('ngo-requests')">
-                        📋 NGO Food Requests (Live)
+                        📋 NGO Live Requests
                     </button>
                 </div>
                 
@@ -134,178 +107,15 @@
 
     </main>
 
-    <!-- Modal 1: Account Profile & Location Modal -->
-    <div class="modal-overlay" id="onboarding-modal">
-        <div class="modal-box" style="max-width: 500px;">
-            <div class="modal-header">
-                <h3 class="modal-title">⚙️ Location & Profile Setup</h3>
-                <button class="btn-close" onclick="closeModal('onboarding-modal')">&times;</button>
-            </div>
-
-            <form onsubmit="completeWizard(event)" style="display:flex; flex-direction:column; gap:1rem; padding-top:0.5rem;">
-                <div>
-                    <label style="font-size:0.83rem; font-weight:600; color:var(--text-muted); display:block; margin-bottom:0.35rem;">Account Role *</label>
-                    <select id="wiz-role" class="form-control" required style="width:100%;">
-                        <option value="donor">🍲 Food Donor / Restaurant</option>
-                        <option value="shelter">🏠 NGO / Shelter</option>
-                        <option value="driver">🚚 Volunteer Driver</option>
-                    </select>
-                </div>
-                <div>
-                    <label style="font-size:0.83rem; font-weight:600; color:var(--text-muted); display:block; margin-bottom:0.35rem;">Organization / Business Name *</label>
-                    <input type="text" id="wiz-name" placeholder="e.g. Laxmi Restaurant or Apna Shelter" required class="form-control" style="width:100%;">
-                </div>
-                <div>
-                    <label style="font-size:0.83rem; font-weight:600; color:var(--text-muted); display:block; margin-bottom:0.35rem;">Street Address & Location *</label>
-                    <input type="text" id="wiz-address" placeholder="e.g. Johari Bazar, Jaipur, Rajasthan, India" required class="form-control" style="width:100%;">
-                </div>
-                <button type="submit" class="btn btn-primary" style="width:100%; padding:0.75rem; font-size:0.95rem; margin-top:0.5rem;">Save Profile & Update Session</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Modal 2: NGO Food Request Form Modal -->
-    <div class="modal-overlay" id="ngo-request-modal">
-        <div class="modal-box" style="max-width: 550px;">
-            <div class="modal-header">
-                <h3 class="modal-title">📋 Post Urgent NGO Food Request</h3>
-                <button class="btn-close" onclick="closeModal('ngo-request-modal')">&times;</button>
-            </div>
-            <form onsubmit="handleNgoPostSubmit(event)" style="display:flex; flex-direction:column; gap:0.85rem; padding:0.5rem 0;">
-                <div>
-                    <label style="font-size:0.83rem; color:var(--text-muted);">NGO / Shelter Organization Name:</label>
-                    <input type="text" id="ngo-req-name" placeholder="e.g. Apna Ghar Ashram Jaipur" required style="width:100%; padding:0.6rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px;">
-                </div>
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.75rem;">
-                    <div>
-                        <label style="font-size:0.83rem; color:var(--text-muted);">Contact Person:</label>
-                        <input type="text" id="ngo-req-person" placeholder="e.g. Rameshwar Prasad" required style="width:100%; padding:0.6rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px;">
-                    </div>
-                    <div>
-                        <label style="font-size:0.83rem; color:var(--text-muted);">Phone Number:</label>
-                        <input type="text" id="ngo-req-phone" placeholder="e.g. +91 94140 12345" required style="width:100%; padding:0.6rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px;">
-                    </div>
-                </div>
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.75rem;">
-                    <div>
-                        <label style="font-size:0.83rem; color:var(--text-muted);">Food Category Needed:</label>
-                        <select id="ngo-req-category" style="width:100%; padding:0.6rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px;">
-                            <option value="Prepared Meals">Prepared Meals</option>
-                            <option value="Bakery">Bakery & Bread</option>
-                            <option value="Produce">Produce & Fruits</option>
-                            <option value="Dairy">Dairy & Eggs</option>
-                            <option value="Packaged">Packaged Goods</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label style="font-size:0.83rem; color:var(--text-muted);">Servings Needed:</label>
-                        <input type="number" id="ngo-req-servings" value="80" min="5" required style="width:100%; padding:0.6rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px;">
-                    </div>
-                </div>
-                <div>
-                    <label style="font-size:0.83rem; color:var(--text-muted);">Delivery Street Address (Rajasthan):</label>
-                    <input type="text" id="ngo-req-address" placeholder="e.g. Mansarovar, Jaipur, Rajasthan, India" required style="width:100%; padding:0.6rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px;">
-                </div>
-                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:0.5rem;">
-                    <div>
-                        <label style="font-size:0.78rem; color:var(--text-muted);">Urgency (Hrs):</label>
-                        <input type="number" step="0.5" id="ngo-req-hours" value="3.0" required style="width:100%; padding:0.5rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px;">
-                    </div>
-                    <div>
-                        <label style="font-size:0.78rem; color:var(--text-muted);">Latitude:</label>
-                        <input type="number" step="0.0001" id="ngo-req-lat" value="26.8500" required style="width:100%; padding:0.5rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px;">
-                    </div>
-                    <div>
-                        <label style="font-size:0.78rem; color:var(--text-muted);">Longitude:</label>
-                        <input type="number" step="0.0001" id="ngo-req-lng" value="75.7700" required style="width:100%; padding:0.5rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px;">
-                    </div>
-                </div>
-                <div>
-                    <label style="font-size:0.83rem; color:var(--text-muted);">Special Notes / Dietary Requirements:</label>
-                    <textarea id="ngo-req-notes" rows="2" placeholder="e.g. Need warm trays for evening shelter guests." style="width:100%; padding:0.6rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px;"></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary" style="width:100%; margin-top:0.5rem;">Publish Live NGO Food Request</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Modal 3: Fulfill NGO Request Modal -->
-    <div class="modal-overlay" id="fulfill-ngo-modal">
-        <div class="modal-box" style="max-width: 500px;">
-            <div class="modal-header">
-                <h3 class="modal-title" id="fulfill-target-title">🍲 Send Surplus Food to NGO</h3>
-                <button class="btn-close" onclick="closeModal('fulfill-ngo-modal')">&times;</button>
-            </div>
-            <p id="fulfill-target-meta" style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem;"></p>
-            <form onsubmit="handleFulfillSubmit(event)" style="display:flex; flex-direction:column; gap:0.85rem;">
-                <input type="hidden" id="fulfill-req-id">
-                <div>
-                    <label style="font-size:0.83rem; color:var(--text-muted);">Your Restaurant / Business Name:</label>
-                    <input type="text" id="fulfill-donor-name" required style="width:100%; padding:0.6rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px;">
-                </div>
-                <div>
-                    <label style="font-size:0.83rem; color:var(--text-muted);">Surplus Food Item Title:</label>
-                    <input type="text" id="fulfill-food-title" placeholder="e.g. Hot Lasagna Trays & Mixed Greens" required style="width:100%; padding:0.6rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px;">
-                </div>
-                <button type="submit" class="btn btn-primary" style="width:100%; margin-top:0.5rem;">Confirm & Dispatch Rescue Food</button>
-            </form>
-        </div>
-    </div>
-
     <!-- Smart Match Modal Popup -->
     <div class="modal-overlay" id="match-modal">
         <div class="modal-box">
             <div class="modal-header">
-                <h3 class="modal-title">⚡ Smart Geo-Matching Engine</h3>
+                <h3 class="modal-title">⚡ Match Allocation Engine</h3>
                 <button class="btn-close" onclick="closeModal('match-modal')">&times;</button>
             </div>
             <div id="match-candidates">
                 <!-- Dynamically populated via JS -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Team & NGO Contact Modal -->
-    <div class="modal-overlay" id="team-modal">
-        <div class="modal-box" style="max-width: 600px;">
-            <div class="modal-header">
-                <h3 class="modal-title">👥 TechVertex Team & NGO Contact</h3>
-                <button class="btn-close" onclick="closeModal('team-modal')">&times;</button>
-            </div>
-            <div style="padding: 1rem 0;">
-                <div style="background: rgba(16,185,129,0.1); border: 1px solid var(--border-highlight); padding: 1rem; border-radius: var(--radius-sm); margin-bottom: 1.5rem;">
-                    <h4 style="color:var(--primary); margin-bottom:0.25rem;">🌱 Surplus-to-Shelter Project Lead</h4>
-                    <p style="font-size:1.05rem; font-weight:700; color:white;">Sitaram</p>
-                    <p style="font-size:0.85rem; color:var(--text-muted);">Lead Architect & Founder • Open for NGO Partnerships & Food Rescue Collaboration</p>
-                </div>
-
-                <h4 style="font-family:var(--font-heading); margin-bottom:0.75rem;">🏆 Hackathon Core Team Members:</h4>
-                <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:0.75rem; margin-bottom:1.5rem;">
-                    <div style="background:rgba(255,255,255,0.05); padding:0.75rem; border-radius:8px; border:1px solid var(--border-glass);">
-                        <strong style="color:var(--primary);">⭐ Sitaram</strong>
-                        <p style="font-size:0.8rem; color:var(--text-muted);">Project & Backend Lead</p>
-                    </div>
-                    <div style="background:rgba(255,255,255,0.05); padding:0.75rem; border-radius:8px; border:1px solid var(--border-glass);">
-                        <strong style="color:white;">✨ Rani</strong>
-                        <p style="font-size:0.8rem; color:var(--text-muted);">UI/UX & Frontend Developer</p>
-                    </div>
-                    <div style="background:rgba(255,255,255,0.05); padding:0.75rem; border-radius:8px; border:1px solid var(--border-glass);">
-                        <strong style="color:white;">✨ Juhi</strong>
-                        <p style="font-size:0.8rem; color:var(--text-muted);">Operations & Logistics Analyst</p>
-                    </div>
-                    <div style="background:rgba(255,255,255,0.05); padding:0.75rem; border-radius:8px; border:1px solid var(--border-glass);">
-                        <strong style="color:white;">✨ Jatin</strong>
-                        <p style="font-size:0.8rem; color:var(--text-muted);">Data Engine & Integration</p>
-                    </div>
-                </div>
-
-                <h4 style="font-family:var(--font-heading); margin-bottom:0.75rem;">📩 NGO & Donor Direct Outreach:</h4>
-                <form onsubmit="handleContactSubmit(event)" style="display:flex; flex-direction:column; gap:0.75rem;">
-                    <input type="text" placeholder="Your Name / Organization / NGO" required style="width:100%; padding:0.6rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px;">
-                    <input type="email" placeholder="Your Email Address or Phone Number" required style="width:100%; padding:0.6rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px;">
-                    <textarea placeholder="Message for Sitaram & Team (e.g. NGO partnership request, food pickup query)" rows="3" required style="width:100%; padding:0.6rem; background:rgba(15,23,42,0.8); border:1px solid var(--border-glass); color:white; border-radius:6px;"></textarea>
-                    <button type="submit" class="btn btn-primary" style="width:100%;">Send Direct Inquiry to Sitaram</button>
-                </form>
             </div>
         </div>
     </div>
@@ -316,41 +126,36 @@
             <div class="footer-brand">
                 <a href="/" class="brand-logo" style="display:inline-flex;">
                     <div class="brand-icon">🌱</div>
-                    <span>Surplus<span style="color:var(--primary)">To</span>Shelter</span>
+                    <span>SurplusToShelter</span>
                 </a>
                 <p class="footer-tagline">
-                    Real-time geo-spatial routing engine connecting corporate dining, restaurants, and caterers with local shelters & NGOs to eliminate urban food waste.
+                    Real-time geo-spatial routing engine connecting corporate dining and restaurants with local shelters & NGOs.
                 </p>
-                <div class="system-status-badge">
-                    <span class="status-dot"></span>
-                    <span>Google Maps API & Dispatch Engine Linked</span>
-                </div>
             </div>
 
             <div class="footer-links-group">
-                <h4>Navigation & Portals</h4>
+                <h4>System Modules</h4>
                 <ul>
                     <li><a href="/">📊 Overview Dashboard</a></li>
-                    <li><a href="/donor">🍲 Restaurant Surplus Intake</a></li>
-                    <li><a href="/shelter">🏠 NGO Shelter Capacity</a></li>
-                    <li><a href="/driver">🚚 Rescue Dispatch</a></li>
-                    <li><a href="/impact">📈 ESG Impact Metrics</a></li>
+                    <li><a href="/donor">🍲 Donor Intake Portal</a></li>
+                    <li><a href="/shelter">🏠 NGO Shelter Hub</a></li>
+                    <li><a href="/driver">🚚 Driver Dispatch Console</a></li>
+                    <li><a href="/impact">📈 ESG Audit Report</a></li>
                 </ul>
             </div>
 
             <div class="footer-links-group">
-                <h4>NGO & Food Rescue Hub</h4>
+                <h4>Account & Access</h4>
                 <ul>
-                    <li><a href="#" onclick="openModal('onboarding-modal')">🔑 Guided Role Login & Location</a></li>
-                    <li><a href="#" onclick="openModal('ngo-request-modal')">📋 Post Urgent NGO Food Request</a></li>
-                    <li><a href="#" onclick="openModal('team-modal')">👥 NGO Partnership Inquiry</a></li>
+                    <li><a href="/login">🔑 Sign In / Register Account</a></li>
+                    <li><a href="/donor">🍲 Post Food Donation</a></li>
+                    <li><a href="/shelter">📋 Submit NGO Request</a></li>
                 </ul>
             </div>
         </div>
 
         <div class="footer-bottom">
-            <p>&copy; 2026 Surplus-to-Shelter Engine • Designed for Social Impact • Built by Sitaram & TechVertex Team</p>
-            <p style="color:var(--text-muted);">Location Precision Active • Powered by Flask & Google Maps API</p>
+            <p>&copy; 2026 Surplus-to-Shelter System • Designed for Social Impact • TechVertex Team</p>
         </div>
     </footer>
 

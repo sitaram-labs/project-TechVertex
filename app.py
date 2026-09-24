@@ -298,14 +298,23 @@ def find_best_shelter_match(donation):
 # ==========================================
 # FLASK WEB ROUTES
 # ==========================================
+# FLASK WEB ROUTES
+# ==========================================
 
 @app.route('/')
-def index():
-    return render_template('index.html')
-
 @app.route('/login')
 def login_portal():
     return render_template('login.html')
+
+@app.route('/portal')
+@app.route('/main')
+def main_portal():
+    return render_template('portal.html')
+
+@app.route('/overview')
+@app.route('/dashboard')
+def overview_portal():
+    return render_template('index.html')
 
 @app.route('/donor')
 def donor_portal():

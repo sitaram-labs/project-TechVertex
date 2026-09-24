@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workspace Portal | Surplus-to-Shelter</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .portal-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem;
+        }
+
+        .portal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.25rem;
+            margin-top: 2rem;
+        }
+
+        .portal-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: border-color 0.15s ease;
+            text-decoration: none;
+            color: var(--text-main);
+        }
+
+        .portal-card:hover {
+            border-color: var(--primary);
+            background: #26334d;
+        }
+
+        .portal-card-icon {
+            font-size: 2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .portal-card-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.35rem;
+        }
+
+        .portal-card-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 1.25rem;
+            line-height: 1.5;
+        }
+
+        .portal-card-action {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Minimal Header -->
+    <nav class="navbar">
+        <a href="/" class="brand-logo">
+            <div class="brand-icon">🌱</div>
+            <span>SurplusToShelter</span>
+        </a>
+        <div class="nav-actions">
+            <span id="user-display-name" style="font-size:0.85rem; color:var(--text-muted); margin-right:0.5rem;">Logged in</span>
+            <a href="/login" class="btn btn-secondary" style="font-size:0.8rem; padding:0.4rem 0.8rem;">🚪 Sign Out</a>
+        </div>
+    </nav>
+
+    <!-- Main Portal Content -->
+    <main class="portal-container">
+        
+        <div class="page-header" style="text-align: center; border-bottom: none; padding-bottom: 0;">
+            <h1 class="page-title" style="font-size: 1.8rem;">Welcome to SurplusToShelter</h1>
+            <p class="page-subtitle" style="font-size: 0.95rem;">Select your workspace to proceed:</p>
+        </div>
+
+        <div class="portal-grid">
+            
+            <!-- Option 1: Restaurant / Donor Intake -->
+            <a href="/donor" class="portal-card">
+                <div>
+                    <div class="portal-card-icon">🍲</div>
+                    <h3 class="portal-card-title">Food Donor / Restaurant</h3>
+                    <p class="portal-card-desc">Post unsold edible surplus meals for instant local shelter distribution.</p>
+                </div>
+                <div class="portal-card-action">Open Donor Intake &rarr;</div>
+            </a>
+
+            <!-- Option 2: NGO / Shelter Hub -->
+            <a href="/shelter" class="portal-card">
+                <div>
+                    <div class="portal-card-icon">🏠</div>
+                    <h3 class="portal-card-title">NGO / Shelter Hub</h3>
+                    <p class="portal-card-desc">Manage shelter storage capacity and post urgent food requests for your community.</p>
+                </div>
+                <div class="portal-card-action">Open Shelter Hub &rarr;</div>
+            </a>
+
+            <!-- Option 3: Volunteer Driver Console -->
+            <a href="/driver" class="portal-card">
+                <div>
+                    <div class="portal-card-icon">🚚</div>
+                    <h3 class="portal-card-title">Volunteer Driver Console</h3>
+                    <p class="portal-card-desc">View assigned pickup tasks, routes, and confirm rescue deliveries.</p>
+                </div>
+                <div class="portal-card-action">Open Driver Console &rarr;</div>
+            </a>
+
+            <!-- Option 4: Live Map Overview -->
+            <a href="/overview" class="portal-card">
+                <div>
+                    <div class="portal-card-icon">🗺️</div>
+                    <h3 class="portal-card-title">Live Rescue Map & Overview</h3>
+                    <p class="portal-card-desc">View real-time urban dispatch map, active food feeds, and geo-matching.</p>
+                </div>
+                <div class="portal-card-action">View Live Overview &rarr;</div>
+            </a>
+
+            <!-- Option 5: Impact Audit -->
+            <a href="/impact" class="portal-card">
+                <div>
+                    <div class="portal-card-icon">📈</div>
+                    <h3 class="portal-card-title">Impact Audit Report</h3>
+                    <p class="portal-card-desc">Audit total meals rescued, CO₂e emissions avoided, and tax deduction metrics.</p>
+                </div>
+                <div class="portal-card-action">View Impact Report &rarr;</div>
+            </a>
+
+        </div>
+
+    </main>
+
+    <footer class="app-footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <a href="/" class="brand-logo" style="display:inline-flex;">
+                    <div class="brand-icon">🌱</div>
+                    <span>SurplusToShelter</span>
+                </a>
+                <p class="footer-tagline">Connecting corporate dining and restaurants with local shelters & NGOs.</p>
+            </div>
+            <div class="footer-bottom" style="grid-column: 1 / -1;">
+                <p>&copy; 2026 Surplus-to-Shelter System • TechVertex Team</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const profile = getUserProfile();
+            const displayElem = document.getElementById('user-display-name');
+            if (displayElem && profile.name) {
+                displayElem.textContent = `Logged in as ${profile.name}`;
+            }
+        });
+    </script>
+</body>
+</html>
