@@ -57,18 +57,6 @@ Over **1.3 billion tons** of food are wasted globally every year, while millions
    python app.py
    ```
 
-4. **Open in Browser:**
+5. **Open in Browser:**
    Go to [`http://127.0.0.1:5000`](http://127.0.0.1:5000)
 
----
-
-## 📽️ Demo Pitch Script (2-Minute Hackathon Presentation)
-
-1. **[0:00 - 0:30] Hook & Problem:** Introduce the issue of food waste vs. hunger in urban areas and why time-sensitivity (2-6 hours) breaks traditional manual logistics.
-2. **[0:30 - 1:15] Live Demo:** 
-   * Click **`⚡ Hackathon Stream Demo`** to show live simulation.
-   * Watch the map fly smoothly to the new donor pin and display a toast alert.
-   * Click **`⚡ Find Match`** on active food posting to showcase the distance & capacity scoring algorithm.
-   * Select a shelter and show the dashed yellow route vector appear live on the map.
-3. **[1:15 - 1:45] Impact Dashboard:** Switch to **ESG Impact** tab to show live carbon & tax savings.
-4. **[1:45 - 2:00] Conclusion:** Future scope (IoT cold-chain tracking, scale across cities).
